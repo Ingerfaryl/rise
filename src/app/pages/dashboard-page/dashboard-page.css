@@ -1,6 +1,5 @@
 /* RESETEA MÁRGENES DEL COMPONENTE */
 @import "tailwindcss";
-@plugin "tailwindcss-primeui";
 
 :host {
   display: block;
