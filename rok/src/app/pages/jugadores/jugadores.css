@@ -1,0 +1,67 @@
+.p-button-dark {
+    background-color: #2d2d2d !important;
+    border-color: #2d2d2d !important;
+    color: white !important;
+}
+
+.p-button-dark:hover {
+    background-color: #1a1a1a !important;
+    border-color: #1a1a1a !important;
+}
+
+.p-button-dark:focus {
+    box-shadow: 0 0 0 0.2rem rgba(45, 45, 45, 0.5) !important;
+}
+
+/* Mejorar el espaciado de los campos */
+.field {
+    margin-bottom: 1rem;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+/* Mejorar la tabla */
+.p-datatable .p-datatable-thead > tr > th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.p-datatable-striped .p-datatable-tbody > tr:nth-child(odd) {
+    background-color: #f8f9fa;
+}
+
+/* Mejorar las cards */
+.p-card .p-card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+/* Responsive: en pantallas pequeñas, botones más pequeños */
+@media (max-width: 768px) {
+    .p-button-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .flex.gap-2 {
+        justify-content: center;
+    }
+}
+
+/* Mejorar el espaciado general */
+.grid {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+.grid > [class*="col-"] {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
