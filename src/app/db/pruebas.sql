@@ -1,7 +1,7 @@
-﻿
+
 use db_rok;
 
-insert into tb_jugador (id_alianza,nombre_juego,poder_inicial,kp_inicial,id_jugador_rok)
+insert into tb_jugador (id_alianza,nombre_juego,poder,kp_inicial,id_jugador_rok)
 values ('1',N'乂 Weiss berg','74624021','376250282','88183602')
 
 insert into tb_alianzas(nombre_alianza,siglas) values ('BLOODY VIKINGS','K325')
