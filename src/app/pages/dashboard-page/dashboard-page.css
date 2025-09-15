@@ -342,3 +342,9 @@ body, html {
     grid-template-columns: 1fr;
   }
 }
+/*Clase para iconos*/
+.my-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 1rem;
+}
