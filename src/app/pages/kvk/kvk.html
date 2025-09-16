@@ -1,61 +1,127 @@
-<div class="flex justify-content-center">
+<div class="flex justify-content-center mx-auto" style="max-width: fit-content;">
+  <!-- Card KVK -->
   <div class="col-6 md:col-3">
     <p-card header="Registrar KVK" class="shadow-2 border-round-lg mr-3">
       <form class="p-fluid grid formgrid">
         <!-- Primera fila: Nombre y Número -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3 mt-2">
           <div>
-            <label for="nombreKvk">Nombre KVK</label>
+            <label for="nombreKvk" class="block text-sm font-medium mb-1">Nombre KVK</label>
             <input id="nombreKvk" pInputText [(ngModel)]="kvk.nombre" name="nombre" />
           </div>
           <div>
-            <label for="numeroKvk">Número KVK</label>
+            <label for="numeroKvk" class="block text-sm font-medium mb-1">Número KVK</label>
             <input id="numeroKvk" pInputText [(ngModel)]="kvk.numero" name="numero" />
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
-            <label for="fechaInicio">Fecha Inicio</label>
+            <label for="fechaInicio" class="block text-sm font-medium mb-1">Fecha Inicio</label>
             <p-date-picker [(ngModel)]="kvk.fechaInicio" name="fechaInicio" dateFormat="yy-mm-dd"
               showIcon></p-date-picker>
           </div>
           <div>
-            <label for="fechaFin">Fecha Fin</label>
+            <label for="fechaFin" class="block text-sm font-medium mb-1">Fecha Fin</label>
             <p-date-picker [(ngModel)]="kvk.fechaFin" name="fechaFin" dateFormat="yy-mm-dd" showIcon></p-date-picker>
           </div>
 
-          <!-- Espaciado entre campos y botón -->
-          <div class="col-12">
-            <div class="mt-3"></div>
-          </div>
-
-          <div>
+          <div class="flex items-end">
             <p-button label="Registrar" (onClick)="registrarKvk()" icon="pi pi-save"
-              styleClass="p-button-success"></p-button>
+              styleClass="p-button-secondary w-full"></p-button>
           </div>
-
         </div>
       </form>
     </p-card>
   </div>
-  <p-card header="Lista de KVKs" class="shadow-2 border-round-lg">
-    <p-table [value]="kvks" [paginator]="true" [rows]="5" responsiveLayout="scroll">
-      <ng-template pTemplate="header">
-        <tr>
-          <th>ID</th>
-          <th>KVK</th>
-          <th>Fecha Inicio</th>
-          <th>Fecha Fin</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-row>
-        <tr>
-          <td>{{ row.id }}</td>
-          <td>{{ row.nombre }}</td>
-          <td>{{ row.fechaInicio | date }}</td>
-          <td>{{ row.fechaFin | date }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  </p-card>
+  <!-- Card Etapa -->
+  <div class="col-6 md:col-3">
+    <p-card header="Registrar Etapa" class="shadow-2 border-round-lg">
+      <form class="p-fluid grid formgrid">
+        <!-- Primera fila: KVK, Etapa, Fechas y Descripción -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-3 mt-2">
+          <!-- Columna 1: KVK -->
+          <div class="flex flex-col gap-3">
+            <div>
+              <label for="kvkSelect" class="block text-sm font-medium mb-1">Selecciona KVK</label>
+              <p-autoComplete [(ngModel)]="etapa.kvk" name="kvk" [dropdown]="true" [suggestions]="filteredKvks"
+                (completeMethod)="searchKvks($event)" placeholder="Selecciona un KVK" field="nombre" inputId="kvkSelect"
+                styleClass="w-full">
+              </p-autoComplete>
+            </div>
+            <div>
+              <label for="etapa" class="block text-sm font-medium mb-1">Etapa</label>
+              <input id="etapa" pInputText [(ngModel)]="etapa.nombre" name="etapa" />
+            </div>
+          </div>
+
+          <!-- Columna 3: Fechas -->
+          <div class="flex flex-col gap-3">
+            <div>
+              <label for="fechaInicioEtapa" class="block text-sm font-medium mb-1">Fecha Inicio</label>
+              <p-date-picker [(ngModel)]="etapa.fechaInicio" name="fechaInicioEtapa" dateFormat="yy-mm-dd"
+                showIcon></p-date-picker>
+            </div>
+            <div>
+              <label for="fechaFinEtapa" class="block text-sm font-medium mb-1">Fecha Fin</label>
+              <p-date-picker [(ngModel)]="etapa.fechaFin" name="fechaFinEtapa" dateFormat="yy-mm-dd"
+                showIcon></p-date-picker>
+            </div>
+          </div>
+
+          <!-- Columna 4: Descripción -->
+          <div>
+            <label for="descripcion" class="block text-sm font-medium mb-1">Descripción</label>
+            <textarea id="descripcion" pInputTextarea [(ngModel)]="etapa.descripcion" name="descripcion" rows="5"
+              class="w-full h-full resize-none"></textarea>
+          </div>
+        </div>
+        <p-button label="Registrar" (onClick)="registrarEtapa()" icon="pi pi-save" styleClass="p-button-secondary"
+          class="-mt-2"></p-button>
+      </form>
+    </p-card>
+  </div>
+</div>
+<div class="flex justify-content-center mx-auto mt-4" style="max-width: fit-content;">
+  <div class="col-12 md:col-6 mr-4">
+    <p-card header="Lista de KVKs" class="shadow-2 border-round-lg">
+      <p-table [value]="kvks" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>ID</th>
+            <th>KVK</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>{{ row.id }}</td>
+            <td>{{ row.nombre }}</td>
+            <td>{{ row.fechaInicio | date }}</td>
+            <td>{{ row.fechaFin | date }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+  <div class="col-12 md:col-6">
+    <p-card header="Lista de Etapas" class="shadow-2 border-round-lg">
+      <p-table [value]="etapas" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>KVK</th>
+            <th>Etapa</th>
+            <th>Descripción</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-row>
+          <tr>
+            <td>{{ row.kvk?.nombre }}</td>
+            <td>{{ row.nombre }}</td>
+            <td>{{ row.descripcion }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
 </div>

@@ -9,9 +9,10 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { DatePicker } from 'primeng/datepicker';
+import { TextareaModule } from 'primeng/textarea';
 @Component({
   selector: 'app-kvk',
-  imports: [DatePicker, CommonModule, ButtonModule, CardModule, InputTextModule, TableModule, FormsModule, TooltipModule, ToolbarModule, AutoCompleteModule],
+  imports: [DatePicker, CommonModule, ButtonModule, CardModule, InputTextModule, TableModule, FormsModule, TooltipModule, ToolbarModule, AutoCompleteModule, TextareaModule],
   templateUrl: './kvk.html',
   styleUrl: './kvk.css'
 })

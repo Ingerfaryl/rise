@@ -56,17 +56,6 @@ export class Jugadores {
   generarDatosDePrueba() {
     this.loading = true;
     this.jugadores = [];
-
-    for (let i = 1; i <= 1000; i++) {
-      this.jugadores.push({
-        id: 1000000 + i,
-        nombre: `Jugador ${i}`,
-        alianza: `Alianza ${(i % 3) + 1}`,
-        poder: Math.floor(Math.random() * 1000000) + 100000,
-        kp: Math.floor(Math.random() * 100000) + 10000
-      });
-    }
-
     this.loading = false;
   }
 
