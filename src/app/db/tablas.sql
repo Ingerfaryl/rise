@@ -1,59 +1,67 @@
 
+--create database db_rok;
 use db_rok;
 
 -- Alianzas
-create table tb_alianzas( 
-	id_alianza 			int identity primary key, 
-	nombre_alianza 		nvarchar(200) not null, 
-	siglas 				nchar(4) not null, 
-	fecha_create 		DATETIME not null DEFAULT GETDATE(), 
-	flg_Activo 			bit not null default 1 
-)
+CREATE TABLE tb_alianzas( 
+	id_alianza       INT AUTO_INCREMENT PRIMARY KEY, 
+	nombre_alianza   VARCHAR(200) NOT NULL, 
+	siglas           CHAR(4) NOT NULL, 
+	fecha_create     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+	flg_Activo       TINYINT(1) NOT NULL DEFAULT 1
+);
 
 -- Jugadores
-create table tb_jugador( 
-	id_jugador 			int identity primary key, 
-	id_jugador_rok 		bigint not null unique, 
-	id_alianza 			int not null, 
-	nombre_juego 		nvarchar(200) not null, 
-	poder 				bigint not null, 
-	kp_inicial 			bigint not null, 
-	fecha_registro 		datetime not null default getdate(), 
-	flg_Activo 			bit not null default 1
-)
+CREATE TABLE tb_jugador( 
+	id_jugador       INT AUTO_INCREMENT PRIMARY KEY, 
+	id_jugador_rok   BIGINT NOT NULL UNIQUE, 
+	id_alianza       INT NOT NULL, 
+	nombre_juego     VARCHAR(200) NOT NULL, 
+	poder            BIGINT NOT NULL, 
+	kp_inicial       BIGINT NOT NULL, 
+	fecha_registro   DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+	flg_Activo       TINYINT(1) NOT NULL DEFAULT 1,
+	FOREIGN KEY (id_alianza) REFERENCES tb_alianzas(id_alianza)
+);
+
 -- KVKs
-create table tb_kvk( 
-	id_kvk 			int identity primary key, 
-	nombre_kvk 		varchar(100) not null, 
-	numero_kvk 		int not null, 
-	fecha_inicio 	date not null, 
-	fecha_fin 		date 
-)
+CREATE TABLE tb_kvk( 
+	id_kvk        INT AUTO_INCREMENT PRIMARY KEY, 
+	nombre_kvk    VARCHAR(100) NOT NULL, 
+	numero_kvk    INT NOT NULL, 
+	fecha_inicio  DATE NOT NULL, 
+	fecha_fin     DATE
+);
 
--- Etapas del KVK (para registrar cada "paso" como el paso 4 o 5)
-create table tb_etapa_kvk( 
-	id_etapa 		int identity primary key,
-	id_kvk 			int not null,
-	nombre_etapa 	varchar(100) not null, 
-	detalles 		text null,
-	fecha_inicio 	date not null,
-	fecha_fin 		date not null,
-	fecha_registro  date not null 
-)
+-- Etapas del KVK
+CREATE TABLE tb_etapa_kvk( 
+	id_etapa        INT AUTO_INCREMENT PRIMARY KEY,
+	id_kvk          INT NOT NULL,
+	nombre_etapa    VARCHAR(100) NOT NULL, 
+	detalles        TEXT NULL,
+	fecha_inicio    DATE NOT NULL,
+	fecha_fin       DATE NOT NULL,
+	fecha_registro  DATE NOT NULL,
+	FOREIGN KEY (id_kvk) REFERENCES tb_kvk(id_kvk)
+);
+
 -- Registro de KP por etapa y jugador
-create table tb_kp_jugador( 
-	id_kp_jugador 	int identity primary key, 
-	id_jugador 		int not null, 
-	id_etapa 		int not null, 
-	kp_etapa 		bigint not null,
-	poder_etapa 	bigint not null
-)
+CREATE TABLE tb_kp_jugador( 
+	id_kp_jugador  INT AUTO_INCREMENT PRIMARY KEY, 
+	id_jugador     INT NOT NULL, 
+	id_etapa       INT NOT NULL, 
+	kp_etapa       BIGINT NOT NULL,
+	poder_etapa    BIGINT NOT NULL,
+	FOREIGN KEY (id_jugador) REFERENCES tb_jugador(id_jugador),
+	FOREIGN KEY (id_etapa) REFERENCES tb_etapa_kvk(id_etapa)
+);
 
--- Metas de KP seg�n poder
-create table tb_meta_kp( 
-	id_meta_kp 		int identity primary key, 
-	poder_min 		bigint not null, 
-	poder_max 		bigint not null, 
-	meta_kp 		bigint not null, 
-	id_kvk 			int not null 
-)
+-- Metas de KP según poder
+CREATE TABLE tb_meta_kp( 
+	id_meta_kp    INT AUTO_INCREMENT PRIMARY KEY, 
+	poder_min     BIGINT NOT NULL, 
+	poder_max     BIGINT NOT NULL, 
+	meta_kp       BIGINT NOT NULL, 
+	id_kvk        INT NOT NULL,
+	FOREIGN KEY (id_kvk) REFERENCES tb_kvk(id_kvk)
+);

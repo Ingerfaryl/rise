@@ -1,97 +1,69 @@
-CREATE OR ALTER PROCEDURE sp_alianza 
-	@opcion				CHAR(1) = '',
-	@id_alianza_rok		VARCHAR(20) = NULL,
-	@nombre_alianza		NVARCHAR(100) = NULL,
-	@siglas				NCHAR(4) = NULL
-AS 
+DROP PROCEDURE IF EXISTS sp_alianza 
+
+CREATE PROCEDURE sp_alianza(
+    IN p_opcion CHAR(1),
+    IN p_id_alianza_rok INT,
+    IN p_nombre_alianza VARCHAR(100),
+    IN p_siglas CHAR(4)
+)
 BEGIN
-	SET NOCOUNT ON;
+    DECLARE v_msg VARCHAR(250);
 
-	DECLARE @msg VARCHAR(250);
+    -- =========================
+    -- READ
+    -- =========================
+    IF p_opcion = 'R' THEN
+        SELECT *
+        FROM tb_alianzas
+        WHERE (p_id_alianza_rok IS NULL OR id_alianza = p_id_alianza_rok)
+           OR (p_nombre_alianza IS NULL OR nombre_alianza = p_nombre_alianza)
+           OR (p_siglas IS NULL OR siglas = p_siglas);
+    
+    -- =========================
+    -- CREATE
+    -- =========================
+    ELSEIF p_opcion = 'C' THEN
+        IF EXISTS (SELECT 1 FROM tb_alianzas WHERE nombre_alianza = p_nombre_alianza) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe una alianza registrada con el mismo nombre';
+        END IF;
 
-	-- =========================
-	-- READ
-	-- =========================
-	IF @opcion = 'R'
-	BEGIN
-		SELECT *
-		FROM tb_alianzas
-		WHERE (@id_alianza_rok IS NULL OR id_alianza = @id_alianza_rok)
-		  or (@nombre_alianza IS NULL OR nombre_alianza = @nombre_alianza)
-		  or (@siglas IS NULL OR siglas = @siglas);
-		RETURN;
-	END
+        IF EXISTS (SELECT 1 FROM tb_alianzas WHERE siglas = p_siglas) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe una alianza registrada con las mismas siglas';
+        END IF;
 
-	-- =========================
-	-- CREATE
-	-- =========================
-	IF @opcion = 'C'
-	BEGIN
-		-- Validaciones
-		IF EXISTS (SELECT 1 FROM tb_alianzas WHERE nombre_alianza = @nombre_alianza)
-		BEGIN 
-			SET @msg = 'Ya existe una alianza registrada con el mismo nombre';
-			THROW 51000, @msg, 1;
-		END
+        INSERT INTO tb_alianzas (nombre_alianza, siglas, fecha_create, flg_Activo)
+        VALUES (p_nombre_alianza, p_siglas, NOW(), 1);
 
-		IF EXISTS (SELECT 1 FROM tb_alianzas WHERE siglas = @siglas)
-		BEGIN 
-			SET @msg = 'Ya existe una alianza registrada con las mismas siglas';
-			THROW 51000, @msg, 1;
-		END
+    -- =========================
+    -- UPDATE
+    -- =========================
+    ELSEIF p_opcion = 'U' THEN
+        IF NOT EXISTS (SELECT 1 FROM tb_alianzas WHERE id_alianza = p_id_alianza_rok) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La alianza no existe';
+        END IF;
 
-		INSERT INTO tb_alianzas (nombre_alianza, siglas, fecha_create, flg_Activo)
-		VALUES (@nombre_alianza, @siglas, GETDATE(), 1);
+        IF EXISTS (SELECT 1 FROM tb_alianzas WHERE nombre_alianza = p_nombre_alianza AND id_alianza <> p_id_alianza_rok) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Otra alianza ya está registrada con ese nombre';
+        END IF;
 
-		RETURN;
-	END
+        IF EXISTS (SELECT 1 FROM tb_alianzas WHERE siglas = p_siglas AND id_alianza <> p_id_alianza_rok) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Otra alianza ya está registrada con esas siglas';
+        END IF;
 
-	-- =========================
-	-- UPDATE
-	-- =========================
-	IF @opcion = 'U'
-	BEGIN
-		IF NOT EXISTS (SELECT 1 FROM tb_alianzas WHERE id_alianza = @id_alianza_rok)
-		BEGIN 
-			SET @msg = 'La alianza no existe';
-			THROW 51000, @msg, 1;
-		END
+        UPDATE tb_alianzas
+        SET nombre_alianza = COALESCE(p_nombre_alianza, nombre_alianza),
+            siglas         = COALESCE(p_siglas, siglas)
+        WHERE id_alianza = p_id_alianza_rok;
 
-		-- Validar duplicados
-		IF EXISTS (SELECT 1 FROM tb_alianzas WHERE nombre_alianza = @nombre_alianza AND id_alianza <> @id_alianza_rok)
-		BEGIN 
-			SET @msg = 'Otra alianza ya está registrada con ese nombre';
-			THROW 51000, @msg, 1;
-		END
+    -- =========================
+    -- DELETE
+    -- =========================
+    ELSEIF p_opcion = 'D' THEN
+        IF NOT EXISTS (SELECT 1 FROM tb_alianzas WHERE id_alianza = p_id_alianza_rok) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'La alianza no existe';
+        END IF;
 
-		IF EXISTS (SELECT 1 FROM tb_alianzas WHERE siglas = @siglas AND id_alianza <> @id_alianza_rok)
-		BEGIN 
-			SET @msg = 'Otra alianza ya está registrada con esas siglas';
-			THROW 51000, @msg, 1;
-		END
-
-		UPDATE tb_alianzas
-		SET nombre_alianza  = ISNULL(@nombre_alianza, nombre_alianza),
-			siglas          = ISNULL(@siglas, siglas)
-		WHERE id_alianza = @id_alianza_rok;
-
-		RETURN;
-	END
-
-	-- =========================
-	-- DELETE
-	-- =========================
-	IF @opcion = 'D'
-	BEGIN
-		IF NOT EXISTS (SELECT 1 FROM tb_alianzas WHERE id_alianza = @id_alianza_rok)
-		BEGIN 
-			SET @msg = 'La alianza no existe';
-			THROW 51000, @msg, 1;
-		END
-
-		DELETE FROM tb_alianzas 
-		WHERE id_alianza = @id_alianza_rok;
-
-		RETURN;
-	END
+        DELETE FROM tb_alianzas WHERE id_alianza = p_id_alianza_rok;
+    END IF;
 END
+

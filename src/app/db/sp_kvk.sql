@@ -1,101 +1,80 @@
+DROP PROCEDURE IF EXISTS sp_kvk;
+CREATE PROCEDURE sp_kvk(
+    IN p_opcion CHAR(1),
+    IN p_nombre_kvk VARCHAR(50),
+    IN p_numero_kvk INT,
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE
+)
+BEGIN
+    DECLARE v_msg VARCHAR(300);
 
-create or alter procedure sp_kvk
-@opcion				char(1) = '',
-@nombre_kvk			varchar(50) = '',
-@numero_kvk			int = '',
-@fecha_inicio		date,
-@fecha_fin			date
-as
-begin 
-	set nocount on;
-    declare @msg nvarchar(300);
+    -- =========================
+    -- READ
+    -- =========================
+    IF p_opcion = 'R' THEN
+        IF p_numero_kvk IS NULL THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Debe enviar el nÃºmero de KVK para la bÃºsqueda';
+        END IF;
 
-	if @opcion = 'R'
-    begin
-        if @numero_kvk is null
-        begin
-            set @msg = 'Debe enviar el número de kvk para la búsqueda';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        SELECT * 
+        FROM tb_kvk 
+        WHERE numero_kvk = p_numero_kvk;
 
-        select * 
-        from tb_kvk 
-        where numero_kvk = @numero_kvk;
-    end
+    -- =========================
+    -- CREATE
+    -- =========================
+    ELSEIF p_opcion = 'C' THEN
+        IF (TRIM(COALESCE(p_nombre_kvk, '')) = '' 
+            OR p_numero_kvk IS NULL 
+            OR p_fecha_inicio IS NULL 
+            OR p_fecha_fin IS NULL) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Faltan datos obligatorios: nombre_kvk, numero_kvk, fecha_inicio y fecha_fin';
+        END IF;
 
-	if @opcion = 'C'
-    begin
-        if ltrim(rtrim(isnull(@nombre_kvk,''))) = '' or @numero_kvk is null or @fecha_inicio is null or @fecha_fin is null
-        begin
-            set @msg = 'Faltan datos obligatorios: nombre_kvk, numero_kvk, fecha_inicio y fecha_fin';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        IF EXISTS (SELECT 1 FROM tb_kvk WHERE numero_kvk = p_numero_kvk) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Ya existe un KVK con ese nÃºmero';
+        END IF;
 
-        if exists(select 1 from tb_kvk where numero_kvk = @numero_kvk)
-        begin
-            set @msg = 'Ya existe un KVK con ese número';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        INSERT INTO tb_kvk (nombre_kvk, numero_kvk, fecha_inicio, fecha_fin)
+        VALUES (p_nombre_kvk, p_numero_kvk, p_fecha_inicio, p_fecha_fin);
 
-        insert into tb_kvk (nombre_kvk, numero_kvk, fecha_inicio, fecha_fin)
-        values (@nombre_kvk, @numero_kvk, @fecha_inicio, @fecha_fin);
+        SELECT 'KVK creado correctamente' AS mensaje;
 
-        set @msg = 'KVK creado correctamente';
-        print @msg;
-    end
+    -- =========================
+    -- UPDATE
+    -- =========================
+    ELSEIF p_opcion = 'U' THEN
+        IF p_numero_kvk IS NULL THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Debe enviar el nÃºmero de KVK para actualizar';
+        END IF;
 
-	if @opcion = 'U'
-    begin
-        if @numero_kvk is null
-        begin
-            set @msg = 'Debe enviar el número de kvk para actualizar';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        IF NOT EXISTS (SELECT 1 FROM tb_kvk WHERE numero_kvk = p_numero_kvk) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No existe un KVK con ese nÃºmero';
+        END IF;
 
-        if not exists(select 1 from tb_kvk where numero_kvk = @numero_kvk)
-        begin
-            set @msg = 'No existe un KVK con ese número';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        UPDATE tb_kvk
+        SET nombre_kvk   = COALESCE(p_nombre_kvk, nombre_kvk),
+            fecha_inicio = COALESCE(p_fecha_inicio, fecha_inicio),
+            fecha_fin    = COALESCE(p_fecha_fin, fecha_fin)
+        WHERE numero_kvk = p_numero_kvk;
 
-        update tb_kvk
-        set 
-            nombre_kvk   = isnull(@nombre_kvk, nombre_kvk),
-            fecha_inicio = isnull(@fecha_inicio, fecha_inicio),
-            fecha_fin    = isnull(@fecha_fin, fecha_fin)
-        where numero_kvk = @numero_kvk;
+        SELECT 'KVK actualizado correctamente' AS mensaje;
 
-        set @msg = 'KVK actualizado correctamente';
-        print @msg;
-    end
+    -- =========================
+    -- DELETE
+    -- =========================
+    ELSEIF p_opcion = 'D' THEN
+        IF p_numero_kvk IS NULL THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Debe enviar el nÃºmero de KVK para eliminar';
+        END IF;
 
-	if @opcion = 'D'
-    begin
-        if @numero_kvk is null
-        begin
-            set @msg = 'Debe enviar el número de kvk para eliminar';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        IF NOT EXISTS (SELECT 1 FROM tb_kvk WHERE numero_kvk = p_numero_kvk) THEN
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'No existe un KVK con ese nÃºmero';
+        END IF;
 
-        if not exists(select 1 from tb_kvk where numero_kvk = @numero_kvk)
-        begin
-            set @msg = 'No existe un KVK con ese número';
-            raiserror(@msg, 16, 1);
-            return;
-        end
+        DELETE FROM tb_kvk WHERE numero_kvk = p_numero_kvk;
 
-        delete from tb_kvk where numero_kvk = @numero_kvk;
-
-        set @msg = 'KVK eliminado correctamente';
-        print @msg;
-    end
-end
-
-
-
+        SELECT 'KVK eliminado correctamente' AS mensaje;
+    END IF;
+END;
