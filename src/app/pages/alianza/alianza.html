@@ -1,1 +1,49 @@
-<p>alianza works!</p>
+<p-card>
+  <ng-template pTemplate="header">
+    <div class="flex justify-content-between align-items-center">
+      <span>Gestión de Alianzas</span>
+    </div>
+  </ng-template>
+
+  <div class="p-4">
+    <div class="flex gap-2 mb-3">
+      <input
+        type="text"
+        pInputText
+        [(ngModel)]="filtro"
+        placeholder="Ingrese nombre de alianza"
+        class="w-full sm:w-auto"
+      />
+      <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="buscar()"></button>
+    </div>
+
+    <p-table
+      [value]="alianzas"
+      *ngIf="alianzas.length > 0"
+      [loading]="loading"
+      [paginator]="true"
+      [rows]="5"
+      responsiveLayout="scroll"
+    >
+      <ng-template pTemplate="header">
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Siglas</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-alianza>
+        <tr>
+          <td>{{ alianza.idAlianza }}</td>
+          <td>{{ alianza.nombreAlianza }}</td>
+          <td>{{ alianza.siglas }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+
+    <p *ngIf="!alianzas.length && !loading" class="text-center mt-4">
+      No hay resultados.
+    </p>
+  </div>
+</p-card>
