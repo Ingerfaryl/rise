@@ -18,7 +18,7 @@ import { AlianzaService } from './services/alianzaservice';
     ButtonModule,
     FormsModule
   ],
-  templateUrl: './alianza.html'
+  templateUrl: './alianza.html',
 })
 export class Alianza {
   filtro: string = '';
@@ -32,7 +32,7 @@ export class Alianza {
 
     const parametros = {
       opcion: 'R',
-      idAlianza:0,
+      idAlianza:1,
       nombreAlianza: this.filtro,
       siglas: ''
     };

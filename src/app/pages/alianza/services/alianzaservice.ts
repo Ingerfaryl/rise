@@ -3,17 +3,21 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { ParametrosAlianza } from '../interfaces';
-import { Environment } from '../../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AlianzaService {
-  private apiUrl = `${Environment.apiUrl}Alianza`;
+  private apiUrl = `${environment.apiUrl}Alianza`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   gestionarAlianza(parametros: ParametrosAlianza): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/Alianza`, parametros);
+    return this.http.post<any>(`${this.apiUrl}/GetAlianzas`, parametros);
+  }
+
+  ListarAlianza(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ListarAlianza`);
   }
 }

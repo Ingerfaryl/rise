@@ -23,3 +23,10 @@ id_jugador_rok, nombre_juego, poder, kp_inicial, tb_alianzas.nombre_alianza, tb_
 from tb_jugador 
 inner join tb_alianzas on tb_jugador.id_alianza = tb_alianzas.id_alianza
 where id_jugador_rok = '88183602' ;
+
+
+select * from vw_listar_alianzas
+
+update tb_alianzas
+set flg_Activo = 0
+where id_alianza in (5,9);
