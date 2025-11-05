@@ -19,6 +19,7 @@ import { AlianzaService } from './services/alianzaservice';
     FormsModule
   ],
   templateUrl: './alianza.html',
+  styleUrls: ['./alianza.css']
 })
 export class Alianza {
   filtro: string = '';
