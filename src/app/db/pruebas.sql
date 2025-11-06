@@ -2,9 +2,14 @@
 use db_rok;
 
 insert into tb_jugador (id_alianza,nombre_juego,poder,kp_inicial,id_jugador_rok)
-values ('1',N'乂 Weiss berg','74624021','376250282','88183602')
+values 
+('1',N'乂 Weiss berg','74624021','376250282','88183602'),
+('15',N'DS亗 LuxeF 3','47672334','367116499','157253593'),
+('15',N'DS亗 Luxe','45798870','747372961','146467785');
 
-insert into tb_alianzas(nombre_alianza,siglas) values ('BLOODY VIKINGS','K325')
+insert into tb_alianzas(nombre_alianza,siglas) values ('BLOODY VIKINGS','K325');
+insert into tb_alianzas(nombre_alianza,siglas) values ('Degenerados Sexuales','DS-3');
+
 
 select * from tb_alianzas;
 

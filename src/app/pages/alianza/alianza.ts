@@ -26,21 +26,21 @@ export class Alianza {
   alianzas: any[] = [];
   loading = false;
 
-  constructor(private alianzaService: AlianzaService) {}
+  constructor(private alianzaService: AlianzaService) { }
 
   buscar() {
     this.loading = true;
 
     const parametros = {
       opcion: 'R',
-      idAlianza:1,
+      idAlianza: 15,
       nombreAlianza: this.filtro,
       siglas: ''
     };
 
     this.alianzaService.gestionarAlianza(parametros).subscribe({
       next: (data) => {
-        this.alianzas = data;
+        this.alianzas = data.result ?? [];
         this.loading = false;
       },
       error: (err) => {
