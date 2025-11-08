@@ -35,3 +35,5 @@ select * from vw_listar_alianzas
 update tb_alianzas
 set flg_Activo = 0
 where id_alianza in (5,9);
+
+CALL sp_alianza('R', NULL, NULL, NULL);

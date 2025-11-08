@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
@@ -21,32 +21,42 @@ import { AlianzaService } from './services/alianzaservice';
   templateUrl: './alianza.html',
   styleUrls: ['./alianza.css']
 })
-export class Alianza {
+export class Alianza implements OnInit {
   filtro: string = '';
   alianzas: any[] = [];
   loading = false;
 
-  constructor(private alianzaService: AlianzaService) { }
+  constructor(private alianzaService: AlianzaService) {}
 
-  buscar() {
+  ngOnInit(): void {
+    this.listarAlianzas();
+  }
+
+  listarAlianzas() {
     this.loading = true;
-
-    const parametros = {
-      opcion: 'R',
-      idAlianza: 15,
-      nombreAlianza: this.filtro,
-      siglas: ''
-    };
-
-    this.alianzaService.gestionarAlianza(parametros).subscribe({
+    this.alianzaService.ListarAlianza().subscribe({
       next: (data) => {
-        this.alianzas = data.result ?? [];
+        this.alianzas = data.result || []; 
+        console.log('Alianzas cargadas:', this.alianzas);
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error al obtener alianzas', err);
+        console.error('Error al listar alianzas', err);
         this.loading = false;
       }
     });
+  }
+
+  buscar() {
+    if (!this.filtro.trim()) {
+      // Si no hay filtro, muestra todo
+      this.listarAlianzas();
+      return;
+    }
+
+    // Si hay filtro, filtra en memoria
+    this.alianzas = this.alianzas.filter(a =>
+      a.nombre_Alianza.toLowerCase().includes(this.filtro.toLowerCase())
+    );
   }
 }
