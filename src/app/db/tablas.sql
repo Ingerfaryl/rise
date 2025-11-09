@@ -8,7 +8,8 @@ CREATE TABLE tb_alianzas(
 	nombre_alianza   VARCHAR(200) NOT NULL, 
 	siglas           CHAR(4) NOT NULL, 
 	fecha_create     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP, 
-	flg_Activo       TINYINT(1) NOT NULL DEFAULT 1
+	flg_Activo       TINYINT(1) NOT NULL DEFAULT 1,
+	CONSTRAINT uq_nombre_alianza UNIQUE (nombre_alianza)
 );
 
 -- Jugadores

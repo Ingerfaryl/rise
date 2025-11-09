@@ -13,13 +13,15 @@ BEGIN
     -- READ
     -- =========================
     IF p_opcion = 'R' THEN
-        IF p_numero_kvk IS NULL THEN
-            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Debe enviar el número de KVK para la búsqueda';
-        END IF;
 
-        SELECT * 
-        FROM tb_kvk 
-        WHERE numero_kvk = p_numero_kvk;
+        SELECT 
+            id_kvk       AS idKvk,
+            nombre_kvk   AS nombreKvk,
+            numero_kvk   AS numeroKvk,
+            fecha_inicio AS fechaInicio,
+            fecha_fin    AS fechaFin
+        FROM tb_kvk;
+
 
     -- =========================
     -- CREATE

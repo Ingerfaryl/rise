@@ -10,11 +10,18 @@ values
 insert into tb_alianzas(nombre_alianza,siglas) values ('BLOODY VIKINGS','K325');
 insert into tb_alianzas(nombre_alianza,siglas) values ('Degenerados Sexuales','DS-3');
 
+ALTER TABLE tb_alianzas
+ADD CONSTRAINT uq_nombre_alianza UNIQUE (nombre_alianza);
 
 select * from tb_alianzas;
 
-select * from tb_jugador
 
+select * from tb_jugador;
+
+select * from tb_kvk;
+
+insert into tb_kvk (nombre_kvk, numero_kvk, fecha_inicio, fecha_fin)
+values ('Himno Heroico', 1, '2025-04-01', '2025-06-30');
 
 
 drop table tb_alianzas
@@ -37,3 +44,7 @@ set flg_Activo = 0
 where id_alianza in (5,9);
 
 CALL sp_alianza('R', NULL, NULL, NULL);
+
+CALL sp_jugador('R', 84663461, 0, '', 0, 0);
+
+call sp_kvk('R', '', null, null, null);

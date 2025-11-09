@@ -9,7 +9,7 @@
             Nombre del Jugador
           </label>
           <input pInputText id="txtJugadorNombre" type="text" placeholder="Ingresa el nombre del jugador" class="w-full"
-            name="jugadorNombre" />
+            name="jugadorNombre" [(ngModel)]="jugadorNombre" />
         </div>
 
         <div>
@@ -17,18 +17,21 @@
             ID del Jugador
           </label>
           <input pInputText id="txtJugadorID" type="number" placeholder="Ingresa el ID del jugador" class="w-full"
-            name="jugadorId" />
+            name="jugadorId" [(ngModel)]="jugadorId" />
         </div>
 
         <div>
           <label for="txtJugadorAlianza" class="block text-sm font-medium mb-1">
             Alianza
           </label>
-          <p-autoComplete [(ngModel)]="selectedAlianza" name="alianza" [dropdown]="true" [suggestions]="alianzas"
-            (completeMethod)="search($event)" placeholder="Selecciona una alianza" inputId="txtJugadorAlianza"
-            styleClass="w-full">
-          </p-autoComplete>
+
+          <p-select id="txtJugadorAlianza" name="alianza" [options]="alianzas" [(ngModel)]="selectedAlianza"
+            optionLabel="label" optionValue="value" placeholder="Selecciona una alianza" [filter]="true"
+            showClear="true" class="w-full">
+          </p-select>
+
         </div>
+
       </div>
 
       <!-- Segunda fila -->
@@ -38,7 +41,7 @@
             Poder del Jugador
           </label>
           <input pInputText id="txtPoderJugador" type="number" placeholder="Ingresa el poder del jugador" class="w-full"
-            name="jugadorPoder" />
+            name="jugadorPoder" [(ngModel)]="jugadorPoder" />
         </div>
 
         <div>
@@ -46,174 +49,55 @@
             KP del Jugador
           </label>
           <input pInputText id="txtKpJugador" type="number" placeholder="Ingresa el KP del jugador" class="w-full"
-            name="jugadorKp" />
+            name="jugadorKp" [(ngModel)]="jugadorKp" />
         </div>
 
         <div class="flex items-end">
-          <p-button label="Registrar" icon="pi pi-check" styleClass="p-button-secondary w-full">
+          <p-button label="Registrar" icon="pi pi-check" styleClass="p-button-secondary w-full"
+            (click)="registrarJugador()">
           </p-button>
         </div>
       </div>
     </form>
+    <p-toast></p-toast>
   </p-card>
 
   <div class="table-section">
-    <!-- Card contenedor para toda la sección -->
     <p-card header="Lista de Jugadores" class="shadow-2 border-round-lg">
-      <!-- Barra de herramientas con búsqueda global -->
       <p-toolbar styleClass="mb-4">
         <div class="p-toolbar-group-start">
-          <p-button label="Exportar" icon="pi pi-upload" styleClass="p-button-help">
-          </p-button>
+          <p-button label="Exportar" icon="pi pi-upload" styleClass="p-button-help"></p-button>
         </div>
 
-        <div class="p-toolbar-group-end">
-          <span class="p-input-icon-left">
-            <i class="pi pi-search"></i>
-            <input pInputText type="text" [(ngModel)]="globalFilter" (input)="applyGlobalFilter($event)"
-              placeholder="Buscar jugadores..." class="w-full sm:w-auto" />
-          </span>
-        </div>
+        <span class="p-input-icon-right">
+          <input pInputText type="text" [(ngModel)]="filtro" placeholder="Buscar jugadores..."
+            class="w-full sm:w-auto" />
+        </span>
+
       </p-toolbar>
 
-      <!-- Tabla con TODAS las funcionalidades -->
-      <p-table #dt [value]="jugadores" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 25, 50, 100]"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} jugadores"
-        [globalFilterFields]="['nombre', 'id', 'alianza', 'poder', 'kp']" [filterDelay]="300" [loading]="loading"
-        responsiveLayout="scroll" styleClass="p-datatable-gridlines p-datatable-striped" [scrollable]="true"
-        scrollHeight="500px" [virtualScroll]="useVirtualScroll" [virtualScrollItemSize]="56">
-
-        <!-- Header con filtros individuales -->
+      <!-- 🧾 Tabla de jugadores -->
+      <p-table [value]="jugadores" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]"
+        [globalFilterFields]="['nombre_Jugador','poder','kp','nombre_Alianza']"
+        [filters]="{ global: { value: filtro, matchMode: 'contains' } }" responsiveLayout="scroll"
+        class="p-datatable-sm">
         <ng-template pTemplate="header">
           <tr>
-            <th style="width: 5%">
-              <div class="flex align-items-center">
-                N°
-              </div>
-            </th>
-            <th pSortableColumn="nombre" style="width: 20%">
-              <div class="flex align-items-center">
-                Nombre
-                <p-sortIcon field="nombre"></p-sortIcon>
-              </div>
-            </th>
-            <th pSortableColumn="id" style="width: 15%">
-              <div class="flex align-items-center">
-                ID
-                <p-sortIcon field="id"></p-sortIcon>
-              </div>
-            </th>
-            <th pSortableColumn="alianza" style="width: 15%">
-              <div class="flex align-items-center">
-                Alianza
-                <p-sortIcon field="alianza"></p-sortIcon>
-              </div>
-            </th>
-            <th pSortableColumn="poder" style="width: 15%">
-              <div class="flex align-items-center">
-                Poder
-                <p-sortIcon field="poder"></p-sortIcon>
-              </div>
-            </th>
-            <th pSortableColumn="kp" style="width: 10%">
-              <div class="flex align-items-center">
-                KP
-                <p-sortIcon field="kp"></p-sortIcon>
-              </div>
-            </th>
-            <th style="width: 20%">Acciones</th>
-          </tr>
-
-          <!-- Segunda fila con filtros individuales -->
-          <tr>
-            <th></th>
-            <th>
-              <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'nombre', 'contains')"
-                placeholder="Filtrar nombre" class="w-full" />
-            </th>
-            <th>
-              <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'id', 'contains')"
-                placeholder="Filtrar ID" class="w-full" />
-            </th>
-            <th>
-              <p-autoComplete [(ngModel)]="filteredAlianzas" name="alianzaFiltro" [suggestions]="filteredAlianzas"
-                (completeMethod)="search($event)" field="label" [dropdown]="true" placeholder="Selecciona una alianza">
-              </p-autoComplete>
-            </th>
-            <th>
-              <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'poder', 'gte')"
-                placeholder="Poder mínimo" class="w-full" />
-            </th>
-            <th>
-              <input pInputText type="text" (input)="dt.filter($any($event.target).value, 'kp', 'gte')"
-                placeholder="KP mínimo" class="w-full" />
-            </th>
-            <th>
-              <p-button icon="pi pi-filter-slash" (click)="limpiarFiltros(dt)" pTooltip="Limpiar filtros"
-                styleClass="p-button-outlined">
-              </p-button>
-            </th>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Poder</th>
+            <th>KP</th>
+            <th>Alianza</th>
           </tr>
         </ng-template>
 
-        <!-- Cuerpo de la tabla -->
-        <ng-template pTemplate="body" let-jugador let-rowIndex="rowIndex">
+        <ng-template pTemplate="body" let-jugador let-i="rowIndex">
           <tr>
-            <td>{{ rowIndex + 1 }}</td>
-            <td>
-              <div class="flex align-items-center">
-                {{ jugador.nombre }}
-              </div>
-            </td>
-            <td>
-              <span class="font-semibold">{{ jugador.id }}</span>
-            </td>
-            <td>
-              <span class="inline-flex align-items-center gap-1 py-1 px-2 border-round text-xs font-semibold"
-                [ngClass]="getAlianzaBadgeClass(jugador.alianza)">
-                <i class="pi pi-users"></i>
-                {{ jugador.alianza }}
-              </span>
-            </td>
-            <td>
-              <div class="flex align-items-center">
-                <i class="pi pi-bolt text-orange-500 mr-1"></i>
-                {{ jugador.poder}}
-              </div>
-            </td>
-            <td>
-              <div class="flex align-items-center">
-                <i class="pi pi-star text-yellow-500 mr-1"></i>
-                {{ jugador.kp}}
-              </div>
-            </td>
-            <td>
-              <div class="flex gap-2">
-                <p-button icon="pi pi-eye" styleClass="p-button-rounded p-button-info p-button-sm"
-                  (click)="verJugador(jugador)" pTooltip="Ver detalles">
-                </p-button>
-                <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-success p-button-sm"
-                  (click)="editarJugador(jugador)" pTooltip="Editar">
-                </p-button>
-                <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger p-button-sm"
-                  (click)="eliminarJugador(jugador)" pTooltip="Eliminar">
-                </p-button>
-              </div>
-            </td>
-          </tr>
-        </ng-template>
-
-        <!-- Template cuando no hay datos -->
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="7" class="text-center p-4">
-              <div class="flex flex-column align-items-center">
-                <i class="pi pi-search text-4xl text-400 mb-3"></i>
-                <span class="text-lg">No se encontraron jugadores</span>
-                <span class="text-sm text-500">Intenta ajustar los filtros de búsqueda</span>
-              </div>
-            </td>
+            <td>{{ i+1}}</td>
+            <td>{{ jugador.nombre_juego }}</td>
+            <td>{{ (+jugador.poder) | number:'1.0-0' }}</td>
+            <td>{{ (+jugador.kp_inicial) | number:'1.0-0' }}</td>
+            <td>{{ jugador.nombre_alianza }}</td>
           </tr>
         </ng-template>
       </p-table>

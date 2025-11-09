@@ -1,99 +1,160 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { InputTextModule } from 'primeng/inputtext';
-import { TableModule, Table } from 'primeng/table';
 import { FormsModule } from '@angular/forms';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { Select } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
-import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TableModule } from 'primeng/table';
+import { Toast } from 'primeng/toast';
 
-export interface Jugador {
-  nombre: string;
-  id: number;
-  alianza: string;
-  poder: number;
-  kp: number;
-}
+import { AlianzaService } from '../alianza/services/alianzaservice';
+import { JugadoresService } from './services/jugadores';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-jugadores',
   standalone: true,
   imports: [
-    ButtonModule,
     CommonModule,
-    InputTextModule,
-    CardModule,
-    TableModule,
     FormsModule,
     AutoCompleteModule,
+    CardModule,
+    ButtonModule,
+    InputTextModule,
+    Select,
     TooltipModule,
-    ToolbarModule
+    ToolbarModule,
+    TableModule,
+    Toast
   ],
+  providers: [MessageService],
   templateUrl: './jugadores.html',
   styleUrls: ['./jugadores.css']
 })
-export class Jugadores {
-  jugadores: Jugador[] = [];
-  loading = false;
-  globalFilter = '';
-  useVirtualScroll: boolean = true;
 
-  // Autocomplete
-  alianzas = [
-    { label: 'Alianza 1', value: 'Alianza 1' },
-    { label: 'Alianza 2', value: 'Alianza 2' },
-    { label: 'Alianza 3', value: 'Alianza 3' }
-  ];
-  filteredAlianzas: any[] = [];     // resultados filtrados
-  selectedAlianza: any = null;      // lo que el usuario selecciona
+export class Jugadores implements OnInit {
+  alianzas: any[] = []; 
+  filteredAlianzas: any[] = [];
+  selectedAlianza: any = null;  
+  filtro: any;
+  jugadores: any[] = [];
 
-  ngOnInit() {
-    this.generarDatosDePrueba();
+  // Campos del formulario
+  jugadorNombre: string = '';
+  jugadorId: number | null = null;
+  jugadorPoder: number | null = null;
+  jugadorKp: number | null = null;
+
+  constructor(
+    private alianzaService: AlianzaService,
+    private jugadoresService: JugadoresService,
+    private messageService: MessageService
+  ) { }
+
+  ngOnInit(): void {
+    this.cargarAlianzas();
+    this.listarJugadores();
   }
 
-  generarDatosDePrueba() {
-    this.loading = true;
-    this.jugadores = [];
-    this.loading = false;
+  cargarAlianzas(): void {
+    this.alianzaService.ListarAlianza().subscribe({
+      next: (data: any) => {
+        if (data && Array.isArray(data.result)) {
+          this.alianzas = data.result.map((a: any) => ({
+            label: a.nombre_Alianza,
+            value: a.id_Alianza
+          }));
+        } else {
+          console.error('El formato de respuesta no es válido:', data);
+        }
+      },
+      error: (err) => {
+        console.error('Error al cargar alianzas:', err);
+      }
+    });
   }
 
-  // 🔍 Autocomplete de alianzas
-  search(event: any) {
+  search(event: any): void {
     const query = event.query.toLowerCase();
     this.filteredAlianzas = this.alianzas.filter(a =>
       a.label.toLowerCase().includes(query)
     );
   }
 
-  applyGlobalFilter(event: any) {
-    this.globalFilter = (event.target as HTMLInputElement).value;
-  }
-
-  limpiarFiltros(table: Table) {
-    table.clear();
-    this.globalFilter = '';
-  }
-
-  getAlianzaBadgeClass(alianza: string): string {
-    switch (alianza) {
-      case 'Alianza 1': return 'text-blue-700 bg-blue-100';
-      case 'Alianza 2': return 'text-green-700 bg-green-100';
-      case 'Alianza 3': return 'text-purple-700 bg-purple-100';
-      default: return 'text-gray-700 bg-gray-100';
+  registrarJugador(): void {
+    if (!this.jugadorNombre || !this.selectedAlianza) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Campos incompletos',
+        detail: 'Debe ingresar nombre y alianza del jugador.'
+      });
+      return;
     }
+
+    const parametros = {
+      opcion: 'C',
+      idJugador: this.jugadorId, 
+      nombreJugador: this.jugadorNombre, 
+      poder: this.jugadorPoder,
+      kp: this.jugadorKp,
+      idAlianza: this.selectedAlianza
+    };
+
+    this.jugadoresService.Jugadores(parametros).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Jugador registrado correctamente'
+        });
+        this.limpiarFormulario();
+      },
+      error: (err) => {
+        console.error('Error al registrar jugador:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo registrar el jugador'
+        });
+      }
+    });
+    this.listarJugadores();
   }
 
-  verJugador(jugador: Jugador) {
-    console.log('Viendo detalles:', jugador);
+  listarJugadores(): void {
+    const parametros = {
+      opcion: 'R'
+    };
+
+    this.jugadoresService.Jugadores(parametros).subscribe({
+      next: (data: any) => {
+        console.log('Datos recibidos al listar jugadores:', data);
+        if (data && data.result && Array.isArray(data.result)) {
+          this.jugadores = data.result;
+        } else {
+          console.error('Formato de datos inválido:', data);
+        }
+      },
+      error: (err) => {
+        console.error('Error al listar jugadores:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo obtener la lista de jugadores.'
+        });
+      }
+    });
   }
 
-  editarJugador(jugador: Jugador) {
-    console.log('Editando:', jugador);
-  }
-
-  eliminarJugador(jugador: Jugador) {
-    this.jugadores = this.jugadores.filter(j => j.id !== jugador.id);
+  limpiarFormulario(): void {
+    this.jugadorId = null;
+    this.jugadorNombre = '';
+    this.jugadorPoder = null;
+    this.jugadorKp = null;
+    this.selectedAlianza = null;
   }
 }

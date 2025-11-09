@@ -34,7 +34,7 @@ export class Alianza implements OnInit {
 
   listarAlianzas() {
     this.loading = true;
-    this.alianzaService.ListarAlianza().subscribe({
+    this.alianzaService.gestionarAlianza({ opcion: 'R' }).subscribe({
       next: (data) => {
         this.alianzas = data.result || []; 
         console.log('Alianzas cargadas:', this.alianzas);
@@ -45,18 +45,5 @@ export class Alianza implements OnInit {
         this.loading = false;
       }
     });
-  }
-
-  buscar() {
-    if (!this.filtro.trim()) {
-      // Si no hay filtro, muestra todo
-      this.listarAlianzas();
-      return;
-    }
-
-    // Si hay filtro, filtra en memoria
-    this.alianzas = this.alianzas.filter(a =>
-      a.nombre_Alianza.toLowerCase().includes(this.filtro.toLowerCase())
-    );
   }
 }

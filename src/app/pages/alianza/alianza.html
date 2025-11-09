@@ -6,17 +6,6 @@
   </ng-template>
 
   <div class="p-4">
-    <div class="flex gap-2 mb-3">
-      <input
-        type="text"
-        pInputText
-        [(ngModel)]="filtro"
-        placeholder="Ingrese nombre de alianza"
-        class="w-full sm:w-auto"
-      />
-      <button pButton type="button" label="Buscar" icon="pi pi-search" (click)="buscar()"></button>
-    </div>
-
     <p-table
       [value]="alianzas"
       *ngIf="alianzas.length > 0"
@@ -30,14 +19,18 @@
           <th>ID</th>
           <th>Nombre</th>
           <th>Siglas</th>
+          <th>Fecha Creacion</th>
+          <th>Activo</th>
         </tr>
       </ng-template>
 
-      <ng-template pTemplate="body" let-alianza>
+      <ng-template pTemplate="body" let-alianza let-i="rowIndex">
         <tr>
-          <td>{{ alianza.id_Alianza }}</td>
+          <td>{{ i + 1 }}</td>
           <td>{{ alianza.nombre_Alianza }}</td>
           <td>{{ alianza.siglas }}</td>
+          <td>{{ alianza.fecha_Create }}</td>
+          <td>{{ alianza.flg_Activo }}</td>
         </tr>
       </ng-template>
     </p-table>

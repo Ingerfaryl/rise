@@ -19,11 +19,11 @@ BEGIN
             j.id_jugador_rok,
             j.poder,
             a.nombre_alianza,
-            j.kp_inicial
+            j.kp_inicial,
+            j.fecha_registro,
+            j.flg_Activo
         FROM tb_jugador j
-        INNER JOIN tb_alianzas a ON a.id_alianza = j.id_alianza
-        WHERE j.id_jugador_rok = p_id_jugador_rok 
-           OR j.nombre_juego = p_nombre_juego;
+        INNER JOIN tb_alianzas a ON a.id_alianza = j.id_alianza;
 
     -- =========================
     -- CREATE
