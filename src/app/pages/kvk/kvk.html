@@ -1,4 +1,4 @@
-<div class="flex justify-content-center mx-auto" style="max-width: fit-content;">
+<div class="flex justify-content-center mx-auto" style="max-width: fit-content">
   <!-- Card KVK -->
   <div class="col-6 md:col-3">
     <p-card header="Registrar KVK" class="shadow-2 border-round-lg mr-3">
@@ -17,17 +17,30 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
             <label for="fechaInicio" class="block text-sm font-medium mb-1">Fecha Inicio</label>
-            <p-date-picker [(ngModel)]="kvk.fechaInicio" name="fechaInicio" dateFormat="yy-mm-dd"
-              showIcon></p-date-picker>
+            <p-date-picker
+              [(ngModel)]="kvk.fechaInicio"
+              name="fechaInicio"
+              dateFormat="yy-mm-dd"
+              showIcon
+            ></p-date-picker>
           </div>
           <div>
             <label for="fechaFin" class="block text-sm font-medium mb-1">Fecha Fin</label>
-            <p-date-picker [(ngModel)]="kvk.fechaFin" name="fechaFin" dateFormat="yy-mm-dd" showIcon></p-date-picker>
+            <p-date-picker
+              [(ngModel)]="kvk.fechaFin"
+              name="fechaFin"
+              dateFormat="yy-mm-dd"
+              showIcon
+            ></p-date-picker>
           </div>
 
           <div class="flex items-end">
-            <p-button label="Registrar" (onClick)="registrarKvk()" icon="pi pi-save"
-              styleClass="p-button-secondary w-full"></p-button>
+            <p-button
+              label="Registrar"
+              (onClick)="registrarKvk()"
+              icon="pi pi-save"
+              styleClass="p-button-secondary w-full"
+            ></p-button>
           </div>
         </div>
       </form>
@@ -42,12 +55,21 @@
           <!-- Columna 1: KVK -->
           <div class="flex flex-col gap-3">
             <div>
-              <label for="kvkSelect" class="block text-sm font-medium mb-1">Selecciona KVK</label>
-              <p-autoComplete [(ngModel)]="etapa.kvk" name="kvk" [dropdown]="true" [suggestions]="filteredKvks"
-                (completeMethod)="searchKvks($event)" placeholder="Selecciona un KVK" field="nombre" inputId="kvkSelect"
-                styleClass="w-full">
-              </p-autoComplete>
-            </div>
+                <label for="kvkSelect" class="block text-sm font-medium mb-1">
+                  Selecciona KVK
+                </label>
+                <p-select
+                  id="kvkSelect"
+                  name="kvk"
+                  [options]="kvks"
+                  [(ngModel)]="etapa.kvk"
+                  placeholder="Selecciona un KVK"
+                  [editable]="true"
+                  optionLabel="nombreKvk"  
+                  optionValue="idKvk"
+                  class="w-full md:w-56"
+                />
+              </div>
             <div>
               <label for="etapa" class="block text-sm font-medium mb-1">Etapa</label>
               <input id="etapa" pInputText [(ngModel)]="etapa.nombre" name="etapa" />
@@ -57,31 +79,52 @@
           <!-- Columna 3: Fechas -->
           <div class="flex flex-col gap-3">
             <div>
-              <label for="fechaInicioEtapa" class="block text-sm font-medium mb-1">Fecha Inicio</label>
-              <p-date-picker [(ngModel)]="etapa.fechaInicio" name="fechaInicioEtapa" dateFormat="yy-mm-dd"
-                showIcon></p-date-picker>
+              <label for="fechaInicioEtapa" class="block text-sm font-medium mb-1"
+                >Fecha Inicio</label
+              >
+              <p-date-picker
+                [(ngModel)]="etapa.fechaInicio"
+                name="fechaInicioEtapa"
+                dateFormat="yy-mm-dd"
+                showIcon
+              ></p-date-picker>
             </div>
             <div>
               <label for="fechaFinEtapa" class="block text-sm font-medium mb-1">Fecha Fin</label>
-              <p-date-picker [(ngModel)]="etapa.fechaFin" name="fechaFinEtapa" dateFormat="yy-mm-dd"
-                showIcon></p-date-picker>
+              <p-date-picker
+                [(ngModel)]="etapa.fechaFin"
+                name="fechaFinEtapa"
+                dateFormat="yy-mm-dd"
+                showIcon
+              ></p-date-picker>
             </div>
           </div>
 
           <!-- Columna 4: Descripción -->
           <div>
             <label for="descripcion" class="block text-sm font-medium mb-1">Descripción</label>
-            <textarea id="descripcion" pInputTextarea [(ngModel)]="etapa.descripcion" name="descripcion" rows="5"
-              class="w-full h-full resize-none"></textarea>
+            <textarea
+              id="descripcion"
+              pInputTextarea
+              [(ngModel)]="etapa.descripcion"
+              name="descripcion"
+              rows="5"
+              class="w-full h-full resize-none"
+            ></textarea>
           </div>
         </div>
-        <p-button label="Registrar" (onClick)="registrarEtapa()" icon="pi pi-save" styleClass="p-button-secondary"
-          class="-mt-2"></p-button>
+        <p-button
+          label="Registrar"
+          (onClick)="registrarEtapa()"
+          icon="pi pi-save"
+          styleClass="p-button-secondary"
+          class="-mt-2"
+        ></p-button>
       </form>
     </p-card>
   </div>
 </div>
-<div class="flex justify-content-center mx-auto mt-4" style="max-width: fit-content;">
+<div class="flex justify-content-center mx-auto mt-4" style="max-width: fit-content">
   <div class="col-12 md:col-6 mr-4">
     <p-card header="Lista de KVKs" class="shadow-2 border-round-lg">
       <p-table [value]="kvks" [paginator]="true" [rows]="5" responsiveLayout="scroll">
@@ -93,10 +136,10 @@
             <th>Fecha Fin</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-row>
+        <ng-template pTemplate="body" let-row let-i="rowIndex">
           <tr>
-            <td>{{ row.id }}</td>
-            <td>{{ row.nombre }}</td>
+            <td>{{ i+1 }}</td>
+            <td>{{ row.nombreKvk }}</td>
             <td>{{ row.fechaInicio | date }}</td>
             <td>{{ row.fechaFin | date }}</td>
           </tr>

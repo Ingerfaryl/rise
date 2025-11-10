@@ -48,3 +48,5 @@ CALL sp_alianza('R', NULL, NULL, NULL);
 CALL sp_jugador('R', 84663461, 0, '', 0, 0);
 
 call sp_kvk('R', '', null, null, null);
+
+call sp_kvk('C', 'Prueba KVK', 1, '2025-07-01', '2025-09-30');

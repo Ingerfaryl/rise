@@ -6,9 +6,12 @@ import { environment } from '../../../../environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class Kvk {
+export class KvkServices {
   private apiUrl = `${environment.apiUrl}Kvk`;
 
   constructor(private http: HttpClient) { }
-  
+
+  getKvkData(parametros: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/GetKvk`, parametros);
+  }
 }

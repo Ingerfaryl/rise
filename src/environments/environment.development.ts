@@ -1,4 +1,4 @@
 export const environment = {
-  apiUrl: 'https://localhost:7286/api/',
+  apiUrl: 'https://orthogenetic-elia-isostatically.ngrok-free.dev/api/',
   production: false
 };
