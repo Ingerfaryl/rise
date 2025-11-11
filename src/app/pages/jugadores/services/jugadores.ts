@@ -8,7 +8,8 @@ import { environment } from '../../../../environments/environment';
 export class JugadoresService {
   private apiUrl = `${environment.apiUrl}Jugador`;
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+   }
   
   Jugadores(parametros: any): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}/GetJugadores`, parametros);
