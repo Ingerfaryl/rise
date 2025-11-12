@@ -45,8 +45,18 @@ where id_alianza in (5,9);
 
 CALL sp_alianza('R', NULL, NULL, NULL);
 
-CALL sp_jugador('R', 84663461, 0, '', 0, 0);
+CALL sp_jugador('R', 0, 0, '', 0, 0);
 
 call sp_kvk('R', '', null, null, null);
 
 call sp_kvk('C', 'Prueba KVK', 1, '2025-07-01', '2025-09-30');
+
+CALL sp_etapa_kvk('C', 1, 'Etapa 1', 'Detalles de la etapa 1', '2025-04-01', '2025-04-30');
+
+CALL sp_etapa_kvk('R', NULL, NULL, NULL, NULL, NULL);
+
+CALL sp_kp_jugador('C', 157253593, 1,1, 1326400, 3000);
+
+CALL sp_kp_jugador('R', NULL, NULL, NULL, NULL,NULL);
+
+drop table tb_kp_jugador;

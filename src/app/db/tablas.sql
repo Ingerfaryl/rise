@@ -49,12 +49,14 @@ CREATE TABLE tb_etapa_kvk(
 -- Registro de KP por etapa y jugador
 CREATE TABLE tb_kp_jugador( 
 	id_kp_jugador  INT AUTO_INCREMENT PRIMARY KEY, 
-	id_jugador     INT NOT NULL, 
+	id_jugador_rok BIGINT NOT NULL, 
 	id_etapa       INT NOT NULL, 
+	id_kvk         INT NOT NULL,  
 	kp_etapa       BIGINT NOT NULL,
 	poder_etapa    BIGINT NOT NULL,
-	FOREIGN KEY (id_jugador) REFERENCES tb_jugador(id_jugador),
-	FOREIGN KEY (id_etapa) REFERENCES tb_etapa_kvk(id_etapa)
+	FOREIGN KEY (id_jugador_rok) REFERENCES tb_jugador(id_jugador_rok),
+	FOREIGN KEY (id_etapa) REFERENCES tb_etapa_kvk(id_etapa),
+	UNIQUE KEY uq_jugador_etapa_kvk (id_jugador_rok, id_etapa, id_kvk)  
 );
 
 -- Metas de KP según poder
