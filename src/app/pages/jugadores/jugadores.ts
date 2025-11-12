@@ -63,6 +63,7 @@ export class Jugadores implements OnInit {
   cargarAlianzas(): void {
     this.alianzaService.ListarAlianza().subscribe({
       next: (data: any) => {
+        console.log('Datos recibidos al cargar alianzas:', data);
         if (data && Array.isArray(data.result)) {
           this.alianzas = data.result.map((a: any) => ({
             label: a.nombre_Alianza,

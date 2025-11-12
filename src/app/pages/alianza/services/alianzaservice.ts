@@ -18,6 +18,6 @@ export class AlianzaService {
   }
 
   ListarAlianza(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/ListarAlianza`);
-  }
+  return this.http.post<any>(`${this.apiUrl}/ListarAlianza`, {});
+}
 }
