@@ -58,5 +58,3 @@ CALL sp_etapa_kvk('R', NULL, NULL, NULL, NULL, NULL);
 CALL sp_kp_jugador('C', 157253593, 1,1, 1326400, 3000);
 
 CALL sp_kp_jugador('R', NULL, NULL, NULL, NULL,NULL);
-
-drop table tb_kp_jugador;

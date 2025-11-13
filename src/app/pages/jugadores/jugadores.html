@@ -8,30 +8,47 @@
           <label for="txtJugadorNombre" class="block text-sm font-medium mb-1">
             Nombre del Jugador
           </label>
-          <input pInputText id="txtJugadorNombre" type="text" placeholder="Ingresa el nombre del jugador" class="w-full"
-            name="jugadorNombre" [(ngModel)]="jugadorNombre" />
+          <input
+            pInputText
+            id="txtJugadorNombre"
+            type="text"
+            placeholder="Ingresa el nombre del jugador"
+            class="w-full"
+            name="jugadorNombre"
+            [(ngModel)]="jugadorNombre"
+          />
         </div>
 
         <div>
-          <label for="txtJugadorID" class="block text-sm font-medium mb-1">
-            ID del Jugador
-          </label>
-          <input pInputText id="txtJugadorID" type="number" placeholder="Ingresa el ID del jugador" class="w-full"
-            name="jugadorId" [(ngModel)]="jugadorId" />
+          <label for="txtJugadorID" class="block text-sm font-medium mb-1"> ID del Jugador </label>
+          <input
+            pInputText
+            id="txtJugadorID"
+            type="number"
+            placeholder="Ingresa el ID del jugador"
+            class="w-full"
+            name="jugadorId"
+            [(ngModel)]="jugadorId"
+          />
         </div>
 
         <div>
-          <label for="txtJugadorAlianza" class="block text-sm font-medium mb-1">
-            Alianza
-          </label>
+          <label for="txtJugadorAlianza" class="block text-sm font-medium mb-1"> Alianza </label>
 
-          <p-select id="txtJugadorAlianza" name="alianza" [options]="alianzas" [(ngModel)]="selectedAlianza"
-            optionLabel="label" optionValue="value" placeholder="Selecciona una alianza" [filter]="true"
-            showClear="true" class="w-full">
+          <p-select
+            id="txtJugadorAlianza"
+            name="alianza"
+            [options]="alianzas"
+            [(ngModel)]="selectedAlianza"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona una alianza"
+            [filter]="true"
+            showClear="true"
+            class="w-full"
+          >
           </p-select>
-
         </div>
-
       </div>
 
       <!-- Segunda fila -->
@@ -40,21 +57,37 @@
           <label for="txtPoderJugador" class="block text-sm font-medium mb-1">
             Poder del Jugador
           </label>
-          <input pInputText id="txtPoderJugador" type="number" placeholder="Ingresa el poder del jugador" class="w-full"
-            name="jugadorPoder" [(ngModel)]="jugadorPoder" />
+          <input
+            pInputText
+            id="txtPoderJugador"
+            type="number"
+            placeholder="Ingresa el poder del jugador"
+            class="w-full"
+            name="jugadorPoder"
+            [(ngModel)]="jugadorPoder"
+          />
         </div>
 
         <div>
-          <label for="txtKpJugador" class="block text-sm font-medium mb-1">
-            KP del Jugador
-          </label>
-          <input pInputText id="txtKpJugador" type="number" placeholder="Ingresa el KP del jugador" class="w-full"
-            name="jugadorKp" [(ngModel)]="jugadorKp" />
+          <label for="txtKpJugador" class="block text-sm font-medium mb-1"> KP del Jugador </label>
+          <input
+            pInputText
+            id="txtKpJugador"
+            type="number"
+            placeholder="Ingresa el KP del jugador"
+            class="w-full"
+            name="jugadorKp"
+            [(ngModel)]="jugadorKp"
+          />
         </div>
 
         <div class="flex items-end">
-          <p-button label="Registrar" icon="pi pi-check" styleClass="p-button-secondary w-full"
-            (click)="registrarJugador()">
+          <p-button
+            label="Registrar"
+            icon="pi pi-check"
+            styleClass="p-button-secondary w-full"
+            (click)="registrarJugador()"
+          >
           </p-button>
         </div>
       </div>
@@ -62,45 +95,223 @@
     <p-toast></p-toast>
   </p-card>
 
-  <div class="table-section">
+  <div class="max-w-7xl mx-auto px-4 py-6">
     <p-card header="Lista de Jugadores" class="shadow-2 border-round-lg">
-      <p-toolbar styleClass="mb-4">
-        <div class="p-toolbar-group-start">
-          <p-button label="Exportar" icon="pi pi-upload" styleClass="p-button-help"></p-button>
+      <!-- Toolbar mejorado -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+        <!-- Botón Exportar -->
+        <div class="w-full sm:w-auto">
+          <p-button
+            label="Exportar"
+            icon="pi pi-upload"
+            styleClass="p-button-primary w-full sm:w-auto"
+            (onClick)="exportarJugadores()"
+          ></p-button>
         </div>
 
-        <span class="p-input-icon-right">
-          <input pInputText type="text" [(ngModel)]="filtro" placeholder="Buscar jugadores..."
-            class="w-full sm:w-auto" />
-        </span>
+        <!-- Buscador -->
+        <div class="w-full sm:w-auto sm:min-w-[300px]">
+          <span class="p-input-icon-left w-full block">
+            <input
+              pInputText
+              type="text"
+              [(ngModel)]="filtro"
+              placeholder="Buscar jugadores..."
+              class="w-full"
+            />
+          </span>
+        </div>
+      </div>
 
-      </p-toolbar>
-
-      <!-- 🧾 Tabla de jugadores -->
-      <p-table [value]="jugadores" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[5,10,20]"
-        [globalFilterFields]="['nombre_Jugador','poder','kp','nombre_Alianza']"
-        [filters]="{ global: { value: filtro, matchMode: 'contains' } }" responsiveLayout="scroll"
-        class="p-datatable-sm">
+      <!-- Tabla -->
+      <p-table
+        [value]="jugadores"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20, 50]"
+        [globalFilterFields]="['nombre_juego', 'poder', 'kp_inicial', 'nombre_alianza']"
+        [filters]="{ global: { value: filtro, matchMode: 'contains' } }"
+        responsiveLayout="scroll"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} jugadores"
+        styleClass="p-datatable-sm w-full"
+      >
         <ng-template pTemplate="header">
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Poder</th>
-            <th>KP</th>
-            <th>Alianza</th>
+            <th class="text-center w-16">#</th>
+            <th class="text-left">Nombre</th>
+            <th class="text-right">Poder</th>
+            <th class="text-right">KP</th>
+            <th class="text-left">Alianza</th>
+            <th class="text-center w-32">Acciones</th>
           </tr>
         </ng-template>
 
         <ng-template pTemplate="body" let-jugador let-i="rowIndex">
-          <tr>
-            <td>{{ i+1}}</td>
-            <td>{{ jugador.nombre_juego }}</td>
-            <td>{{ (+jugador.poder) | number:'1.0-0' }}</td>
-            <td>{{ (+jugador.kp_inicial) | number:'1.0-0' }}</td>
-            <td>{{ jugador.nombre_alianza }}</td>
+          <tr class="hover:bg-gray-50">
+            <td class="text-center text-gray-500 font-medium">
+              {{ i + 1 }}
+            </td>
+            <td class="font-semibold text-gray-800">
+              {{ jugador.nombre_juego }}
+            </td>
+            <td class="text-right font-mono text-blue-600">
+              {{ +jugador.poder | number : '1.0-0' }}
+            </td>
+            <td class="text-right font-mono text-green-600">
+              {{ +jugador.kp_inicial | number : '1.0-0' }}
+            </td>
+            <td class="text-gray-700">
+              <span
+                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800"
+              >
+                {{ jugador.nombre_alianza || 'Sin alianza' }}
+              </span>
+            </td>
+            <td class="text-center">
+              <div class="flex justify-center gap-2">
+                <p-button
+                  icon="pi pi-pencil"
+                  styleClass="p-button-rounded p-button-warning p-button-text"
+                  [pTooltip]="'Editar'"
+                  tooltipPosition="top"
+                  (onClick)="abrirModalEditar(jugador)"
+                ></p-button>
+                <p-button
+                  icon="pi pi-trash"
+                  styleClass="p-button-rounded p-button-danger p-button-text"
+                  [pTooltip]="'Eliminar'"
+                  tooltipPosition="top"
+                  (onClick)="confirmarEliminar(jugador)"
+                ></p-button>
+              </div>
+            </td>
           </tr>
         </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6" class="text-center py-8">
+              <div class="flex flex-col items-center gap-3">
+                <i class="pi pi-users text-4xl text-gray-400"></i>
+                <p class="text-gray-500 font-medium">No se encontraron jugadores</p>
+                <p class="text-gray-400 text-sm">
+                  {{
+                    filtro
+                      ? 'Intenta con otros términos de búsqueda'
+                      : 'Aún no hay jugadores registrados'
+                  }}
+                </p>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+          <div class="flex justify-between items-center pt-3 text-sm text-gray-600">
+            <span
+              >Total de jugadores: <strong>{{ jugadores.length }}</strong></span
+            >
+          </div>
+        </ng-template>
       </p-table>
+
     </p-card>
   </div>
 </div>
+
+
+<!-- modal -->
+ <p-dialog
+  [(visible)]="mostrarModalEditar"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="w-full max-w-2xl"
+  header="Editar Jugador"
+>
+  <div class="space-y-4" *ngIf="jugadorSeleccionado">
+    <!-- Nombre del Jugador -->
+    <div>
+      <label for="nombreEditar" class="block text-sm font-medium mb-2">
+        Nombre del Jugador <span class="text-red-500">*</span>
+      </label>
+      <input
+        id="nombreEditar"
+        type="text"
+        pInputText
+        [(ngModel)]="jugadorSeleccionado.nombre_juego"
+        name="nombreEditar"
+        class="w-full"
+        placeholder="Ingrese el nombre"
+      />
+    </div>
+
+    <!-- Grid para Poder y KP -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="poderEditar" class="block text-sm font-medium mb-2">
+          Poder <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="poderEditar"
+          [(ngModel)]="jugadorSeleccionado.poder"
+          name="poderEditar"
+          mode="decimal"
+          class="w-full"
+          inputStyleClass="w-full"
+        />
+      </div>
+
+      <div>
+        <label for="kpEditar" class="block text-sm font-medium mb-2">
+          KP Inicial <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="kpEditar"
+          [(ngModel)]="jugadorSeleccionado.kp_inicial"
+          name="kpEditar"
+          mode="decimal"
+          class="w-full"
+          inputStyleClass="w-full"
+        />
+      </div>
+    </div>
+
+    <!-- Alianza -->
+    <div>
+      <label for="alianzaEditar" class="block text-sm font-medium mb-2">
+        Alianza
+      </label>
+      <input
+        id="alianzaEditar"
+        type="text"
+        pInputText
+        [(ngModel)]="jugadorSeleccionado.nombre_alianza"
+        name="alianzaEditar"
+        class="w-full"
+        placeholder="Nombre de la alianza"
+      />
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-3">
+      <p-button
+        label="Cancelar"
+        icon="pi pi-times"
+        styleClass="p-button-text"
+        (onClick)="cerrarModalEditar()"
+      ></p-button>
+      <p-button
+        label="Guardar Cambios"
+        icon="pi pi-check"
+        styleClass="p-button-primary"
+        (onClick)="guardarCambios()"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+<!-- DIALOG DE CONFIRMACIÓN PARA ELIMINAR -->
+<p-confirmDialog></p-confirmDialog>

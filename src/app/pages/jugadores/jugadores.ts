@@ -10,10 +10,12 @@ import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 import { AlianzaService } from '../alianza/services/alianzaservice';
 import { JugadoresService } from './services/jugadores';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-jugadores',
@@ -29,9 +31,11 @@ import { MessageService } from 'primeng/api';
     TooltipModule,
     ToolbarModule,
     TableModule,
-    Toast
+    Toast,
+    DialogModule,
+    ConfirmDialogModule
   ],
-  providers: [MessageService],
+  providers: [MessageService,ConfirmationService],
   templateUrl: './jugadores.html',
   styleUrls: ['./jugadores.css']
 })
@@ -43,6 +47,11 @@ export class Jugadores implements OnInit {
   filtro: any;
   jugadores: any[] = [];
 
+  // Variables para el modal de edición
+  mostrarModalEditar: boolean = false;
+  jugadorSeleccionado: any = null;
+  jugadorOriginal: any = null; // Para guardar copia del original
+
   // Campos del formulario
   jugadorNombre: string = '';
   jugadorId: number | null = null;
@@ -52,12 +61,140 @@ export class Jugadores implements OnInit {
   constructor(
     private alianzaService: AlianzaService,
     private jugadoresService: JugadoresService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
   ) { }
 
   ngOnInit(): void {
     this.cargarAlianzas();
     this.listarJugadores();
+  }
+
+  abrirModalEditar(jugador: any) {
+    // Guardamos una copia del jugador original por si cancela
+    this.jugadorOriginal = { ...jugador };
+    // Clonamos el jugador para editarlo
+    this.jugadorSeleccionado = { ...jugador };
+    this.mostrarModalEditar = true;
+  }
+
+  guardarCambios() {
+    // Validación básica
+    if (!this.jugadorSeleccionado.nombre_juego?.trim()) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'El nombre del jugador es obligatorio'
+      });
+      return;
+    }
+
+    if (!this.jugadorSeleccionado.poder || !this.jugadorSeleccionado.kp_inicial) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Advertencia',
+        detail: 'Poder y KP son obligatorios'
+      });
+      return;
+    }
+
+    // Aquí llamarías a tu servicio para actualizar en el backend
+    // this.jugadoresService.actualizarJugador(this.jugadorSeleccionado).subscribe({
+    //   next: (response) => {
+    //     // Actualizar el jugador en la lista local
+    //     const index = this.jugadores.findIndex(j => j.id === this.jugadorSeleccionado.id);
+    //     if (index !== -1) {
+    //       this.jugadores[index] = { ...this.jugadorSeleccionado };
+    //     }
+    //     
+    //     this.messageService.add({
+    //       severity: 'success',
+    //       summary: 'Éxito',
+    //       detail: 'Jugador actualizado correctamente'
+    //     });
+    //     
+    //     this.cerrarModalEditar();
+    //   },
+    //   error: (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: 'No se pudo actualizar el jugador'
+    //     });
+    //   }
+    // });
+
+    // Simulación temporal (quitar cuando tengas el servicio)
+    const index = this.jugadores.findIndex(j => j.id === this.jugadorSeleccionado.id);
+    if (index !== -1) {
+      this.jugadores[index] = { ...this.jugadorSeleccionado };
+    }
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: 'Jugador actualizado correctamente'
+    });
+
+    this.cerrarModalEditar();
+  }
+
+  // Confirmar eliminación
+  confirmarEliminar(jugador: any) {
+    this.confirmationService.confirm({
+      message: `¿Está seguro de eliminar al jugador <strong>${jugador.nombre_juego}</strong>?`,
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      accept: () => {
+        this.eliminarJugador(jugador);
+      }
+    });
+  }
+
+  // Eliminar jugador
+  eliminarJugador(jugador: any) {
+    // Aquí llamarías a tu servicio para eliminar en el backend
+    // this.jugadoresService.eliminarJugador(jugador.id).subscribe({
+    //   next: () => {
+    //     // Eliminar de la lista local
+    //     this.jugadores = this.jugadores.filter(j => j.id !== jugador.id);
+    //     
+    //     this.messageService.add({
+    //       severity: 'success',
+    //       summary: 'Éxito',
+    //       detail: 'Jugador eliminado correctamente'
+    //     });
+    //   },
+    //   error: (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: 'No se pudo eliminar el jugador'
+    //     });
+    //   }
+    // });
+
+    // Simulación temporal (quitar cuando tengas el servicio)
+    this.jugadores = this.jugadores.filter(j => j.id !== jugador.id);
+    
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Éxito',
+      detail: `${jugador.nombre_juego} ha sido eliminado`
+    });
+  }
+
+  cerrarModalEditar() {
+    this.mostrarModalEditar = false;
+    this.jugadorSeleccionado = null;
+    this.jugadorOriginal = null;
+  }
+
+  exportarJugadores(): void {
+    // Lógica para exportar jugadores
   }
 
   cargarAlianzas(): void {

@@ -5,24 +5,50 @@
       <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
     </div>
     <ul class="sidebar-menu">
-      <li><a href="#" class="active"><i-lucide [img]="home" class="my-icon"></i-lucide> Inicio</a></li>
-      <li><a href="/dashboard/jugadores" routerLinkActive="active"><i-lucide [img]="users" class="my-icon"></i-lucide> Jugadores</a></li>
-      <li><a href="/dashboard/kvk" routerLinkActive="active"><i-lucide [img]="SwordsIcon" class="my-icon"></i-lucide> KVK</a></li>
-      <!-- <li><a href="/dashboard/mge" routerLinkActive="active"><i class="fas fa-shopping-cart"></i> MGE</a></li> -->
-      <li><a href="/dashboard/alianza" routerLinkActive="active"><i-lucide [img]="flag" class="my-icon"></i-lucide> Alianza</a></li>
-      
+      <li>
+        <a
+          routerLink="/dashboard"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i-lucide [img]="home" class="my-icon"></i-lucide> Inicio
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/dashboard/jugadores" routerLinkActive="active">
+          <i-lucide [img]="users" class="my-icon"></i-lucide> Jugadores
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/dashboard/kvk" routerLinkActive="active">
+          <i-lucide [img]="SwordsIcon" class="my-icon"></i-lucide> KVK
+        </a>
+      </li>
+
+      <li>
+        <a routerLink="/dashboard/alianza" routerLinkActive="active">
+          <i-lucide [img]="flag" class="my-icon"></i-lucide> Alianza
+        </a>
+      </li>
     </ul>
   </aside>
 
   <!-- HEADER -->
   <header class="header">
-    <div class="header-title">
-      <h1>Bienvenido al Dashboard</h1>
-    </div>
+
     <div class="header-actions">
-      <div class="user-profile">
+      <div class="user-profile" (click)="toggleMenu()" tabindex="0">
         <div class="user-avatar">Al</div>
         <span>Alex</span>
+        <i class="fas fa-caret-down"></i>
+
+        <!-- Dropdown -->
+        <div class="dropdown-menu" *ngIf="menuOpen">
+          <a (click)="goToProfile()">👤 Mi perfil</a>
+          <a (click)="logout()">🚪 Cerrar sesión</a>
+        </div>
       </div>
     </div>
   </header>

@@ -1,14 +1,13 @@
-<p-card>
+<p-card class="alianza-card">
   <ng-template pTemplate="header">
-    <div class="flex justify-content-between align-items-center">
+    <div class="alianza-header">
       <span>Gestión de Alianzas</span>
     </div>
   </ng-template>
 
-  <div class="p-4">
+  <div class="alianza-body">
     <p-table
       [value]="alianzas"
-      *ngIf="alianzas.length > 0"
       [loading]="loading"
       [paginator]="true"
       [rows]="5"
@@ -19,7 +18,7 @@
           <th>ID</th>
           <th>Nombre</th>
           <th>Siglas</th>
-          <th>Fecha Creacion</th>
+          <th>Fecha Creación</th>
           <th>Activo</th>
         </tr>
       </ng-template>
@@ -29,13 +28,20 @@
           <td>{{ i + 1 }}</td>
           <td>{{ alianza.nombre_Alianza }}</td>
           <td>{{ alianza.siglas }}</td>
-          <td>{{ alianza.fecha_Create }}</td>
-          <td>{{ alianza.flg_Activo }}</td>
+          <td>{{ alianza.fecha_Create | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <span
+              class="status-pill"
+              [ngClass]="alianza.flg_Activo ? 'active' : 'inactive'"
+            >
+              {{ alianza.flg_Activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
         </tr>
       </ng-template>
     </p-table>
 
-    <p *ngIf="!alianzas.length && !loading" class="text-center mt-4">
+    <p *ngIf="!alianzas.length && !loading" class="no-data">
       No hay resultados.
     </p>
   </div>
