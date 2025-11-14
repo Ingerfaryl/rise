@@ -365,3 +365,41 @@ html {
   height: 20px;
   margin-right: 1rem;
 }
+
+/* BOTÓN HAMBURGUESA */
+.hamburger {
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+  display: none; /* solo móvil */
+}
+
+/* Sidebar móvil oculta inicialmente */
+@media (max-width: 768px) {
+  .hamburger {
+    display: block;
+  }
+
+  .sidebar {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: -260px; /* OCULTA */
+    width: 260px;
+    height: 100vh;
+    z-index: 999;
+    transition: 0.3s ease;
+  }
+
+  .sidebar.open {
+    left: 0; /* MOSTRAR */
+  }
+
+  /* Cuando la sidebar está en móvil, la grid desaparece */
+  .dashboard-container {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "header"
+      "main";
+  }
+}

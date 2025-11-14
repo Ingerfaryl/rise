@@ -8,7 +8,7 @@ import { LucideAngularModule, SwordsIcon, UserIcon, Flag, HouseIcon } from 'luci
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive, LucideAngularModule],
   templateUrl: './dashboard-page.html',
-  styleUrls: ['./dashboard-page.css']
+  styleUrls: ['./dashboard-page.css'],
 })
 export class DashboardPageComponent {
   readonly SwordsIcon = SwordsIcon;
@@ -17,13 +17,16 @@ export class DashboardPageComponent {
   readonly home = HouseIcon;
 
   menuOpen = false;
+  sidebarOpen = false;
 
   constructor(private router: Router) {}
 
   toggleMenu() {
     this.menuOpen = !this.menuOpen;
   }
-
+  toggleSidebar() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
   // Cierra el menú si haces clic fuera de él
   @HostListener('document:click', ['$event'])
   clickOutside(event: MouseEvent) {

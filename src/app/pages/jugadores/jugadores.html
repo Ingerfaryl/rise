@@ -215,14 +215,12 @@
           </div>
         </ng-template>
       </p-table>
-
     </p-card>
   </div>
 </div>
 
-
 <!-- modal -->
- <p-dialog
+<p-dialog
   [(visible)]="mostrarModalEditar"
   [modal]="true"
   [closable]="true"
@@ -232,20 +230,40 @@
   header="Editar Jugador"
 >
   <div class="space-y-4" *ngIf="jugadorSeleccionado">
-    <!-- Nombre del Jugador -->
-    <div>
-      <label for="nombreEditar" class="block text-sm font-medium mb-2">
-        Nombre del Jugador <span class="text-red-500">*</span>
-      </label>
-      <input
-        id="nombreEditar"
-        type="text"
-        pInputText
-        [(ngModel)]="jugadorSeleccionado.nombre_juego"
-        name="nombreEditar"
-        class="w-full"
-        placeholder="Ingrese el nombre"
-      />
+    <!-- Grid para Nombre y Alianza -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Nombre del Jugador -->
+      <div>
+        <label for="nombreEditar" class="block text-sm font-medium mb-2">
+          Nombre del Jugador <span class="text-red-500">*</span>
+        </label>
+        <input
+          id="nombreEditar"
+          type="text"
+          pInputText
+          [(ngModel)]="jugadorSeleccionado.nombre_juego"
+          name="nombreEditar"
+          class="w-full"
+          placeholder="Ingrese el nombre"
+        />
+      </div>
+
+      <!-- Alianza -->
+      <div>
+        <label for="txtJugadorAlianza" class="block text-sm font-medium mb-2">Alianza</label>
+        <p-select
+          id="txtJugadorAlianzaEditar"
+          name="alianzaEditar"
+          [options]="alianzas"
+          [(ngModel)]="selectedAlianzaEdit"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Selecciona una alianza"
+          [showClear]="true"
+          class="w-full"
+        >
+        </p-select>
+      </div>
     </div>
 
     <!-- Grid para Poder y KP -->
@@ -254,45 +272,30 @@
         <label for="poderEditar" class="block text-sm font-medium mb-2">
           Poder <span class="text-red-500">*</span>
         </label>
-        <input
+        <p-inputNumber
           id="poderEditar"
           [(ngModel)]="jugadorSeleccionado.poder"
           name="poderEditar"
           mode="decimal"
           class="w-full"
           inputStyleClass="w-full"
-        />
+          [min]="0"
+        ></p-inputNumber>
       </div>
 
       <div>
         <label for="kpEditar" class="block text-sm font-medium mb-2">
           KP Inicial <span class="text-red-500">*</span>
         </label>
-        <input
+        <p-inputNumber
           id="kpEditar"
           [(ngModel)]="jugadorSeleccionado.kp_inicial"
           name="kpEditar"
-          mode="decimal"
           class="w-full"
-          inputStyleClass="w-full"
+          [min]="0"
+          placeholder="Ingrese el KP"
         />
       </div>
-    </div>
-
-    <!-- Alianza -->
-    <div>
-      <label for="alianzaEditar" class="block text-sm font-medium mb-2">
-        Alianza
-      </label>
-      <input
-        id="alianzaEditar"
-        type="text"
-        pInputText
-        [(ngModel)]="jugadorSeleccionado.nombre_alianza"
-        name="alianzaEditar"
-        class="w-full"
-        placeholder="Nombre de la alianza"
-      />
     </div>
   </div>
 

@@ -12,6 +12,7 @@ import { TableModule } from 'primeng/table';
 import { Toast } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { InputNumberModule } from 'primeng/inputnumber';
 
 import { AlianzaService } from '../alianza/services/alianzaservice';
 import { JugadoresService } from './services/jugadores';
@@ -33,7 +34,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     TableModule,
     Toast,
     DialogModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    InputNumberModule
   ],
   providers: [MessageService,ConfirmationService],
   templateUrl: './jugadores.html',
@@ -44,6 +46,7 @@ export class Jugadores implements OnInit {
   alianzas: any[] = []; 
   filteredAlianzas: any[] = [];
   selectedAlianza: any = null;  
+  selectedAlianzaEdit: any = null;  
   filtro: any;
   jugadores: any[] = [];
 
@@ -75,6 +78,8 @@ export class Jugadores implements OnInit {
     this.jugadorOriginal = { ...jugador };
     // Clonamos el jugador para editarlo
     this.jugadorSeleccionado = { ...jugador };
+    // Inicializar la selección de alianza para el modal sin afectar el formulario de registro
+    this.selectedAlianzaEdit = jugador.id_alianza ?? jugador.id_Alianza ?? jugador.idAlianza ?? null;
     this.mostrarModalEditar = true;
   }
 
@@ -97,46 +102,36 @@ export class Jugadores implements OnInit {
       });
       return;
     }
-
+    const parametros = {
+      opcion: 'U', // 'U' para Update
+      idJugador: this.jugadorSeleccionado.id_jugador_rok, // Usar el ID del jugador seleccionado
+      nombreJugador: this.jugadorSeleccionado.nombre_juego, 
+      poder: this.jugadorSeleccionado.poder,
+      kp: this.jugadorSeleccionado.kp_inicial,
+      idAlianza: this.selectedAlianzaEdit?.value ?? this.selectedAlianzaEdit
+    };
+    console.log('Parámetros para actualizar jugador:', parametros);
     // Aquí llamarías a tu servicio para actualizar en el backend
-    // this.jugadoresService.actualizarJugador(this.jugadorSeleccionado).subscribe({
-    //   next: (response) => {
-    //     // Actualizar el jugador en la lista local
-    //     const index = this.jugadores.findIndex(j => j.id === this.jugadorSeleccionado.id);
-    //     if (index !== -1) {
-    //       this.jugadores[index] = { ...this.jugadorSeleccionado };
-    //     }
-    //     
-    //     this.messageService.add({
-    //       severity: 'success',
-    //       summary: 'Éxito',
-    //       detail: 'Jugador actualizado correctamente'
-    //     });
-    //     
-    //     this.cerrarModalEditar();
-    //   },
-    //   error: (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Error',
-    //       detail: 'No se pudo actualizar el jugador'
-    //     });
-    //   }
-    // });
-
-    // Simulación temporal (quitar cuando tengas el servicio)
-    const index = this.jugadores.findIndex(j => j.id === this.jugadorSeleccionado.id);
-    if (index !== -1) {
-      this.jugadores[index] = { ...this.jugadorSeleccionado };
-    }
-
-    this.messageService.add({
-      severity: 'success',
-      summary: 'Éxito',
-      detail: 'Jugador actualizado correctamente'
+    this.jugadoresService.Jugadores(parametros).subscribe({
+      next: () => {
+        console.log(parametros)
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Jugador actualizado correctamente'
+        });
+      },
+      error: (error) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar el jugador'
+        });
+      }
     });
 
     this.cerrarModalEditar();
+    this.listarJugadores(); // Refrescar la lista después de guardar
   }
 
   // Confirmar eliminación
@@ -191,6 +186,7 @@ export class Jugadores implements OnInit {
     this.mostrarModalEditar = false;
     this.jugadorSeleccionado = null;
     this.jugadorOriginal = null;
+    this.selectedAlianzaEdit = null;
   }
 
   exportarJugadores(): void {
