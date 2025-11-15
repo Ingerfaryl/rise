@@ -27,6 +27,13 @@ export class DashboardPageComponent {
   toggleSidebar() {
     this.sidebarOpen = !this.sidebarOpen;
   }
+
+  closeSidebarOnMobile() {
+    // Cierra el sidebar solo en móvil cuando se hace clic en un link
+    if (window.innerWidth <= 768) {
+      this.sidebarOpen = false;
+    }
+  }
   // Cierra el menú si haces clic fuera de él
   @HostListener('document:click', ['$event'])
   clickOutside(event: MouseEvent) {
