@@ -63,6 +63,7 @@
             ></p-button>
           </div>
         </form>
+        <p-toast></p-toast>
       </p-card>
     </div>
 
@@ -78,17 +79,9 @@
                 <label for="kvkSelect" class="block text-sm font-medium mb-2">
                   Selecciona KVK
                 </label>
-                <p-select
-                  id="kvkSelect"
-                  name="kvk"
-                  [options]="kvks"
-                  [(ngModel)]="etapa.kvk"
-                  placeholder="Selecciona un KVK"
-                  [editable]="true"
-                  optionLabel="nombreKvk"
-                  optionValue="idKvk"
-                  class="w-full"
-                />
+                <p-select id="kvkSelect" name="kvk" [options]="kvks" [(ngModel)]="etapa.kvk"
+                  placeholder="Selecciona un KVK" [editable]="true" optionLabel="display" optionValue="idKvk" class="w-full">
+                </p-select>
               </div>
               <div>
                 <label for="etapa" class="block text-sm font-medium mb-2">Etapa</label>
@@ -152,6 +145,7 @@
             ></p-button>
           </div>
         </form>
+        <p-toast></p-toast>
       </p-card>
     </div>
   </div>
@@ -197,32 +191,37 @@
     <!-- Tabla de Etapas -->
     <div class="w-full">
       <p-card header="Lista de Etapas" class="shadow-2 border-round-lg h-full">
-        <p-table
-          [value]="etapas"
-          [paginator]="true"
-          [rows]="5"
-          responsiveLayout="scroll"
-          styleClass="w-full"
-        >
+        <div class="mb-4">
+          <p-select [options]="kvks" [(ngModel)]="kvkSeleccionado" optionLabel="display" optionValue="idKvk"
+            placeholder="Filtrar por KVK" class="w-full md:w-30rem" (onChange)="filtrarEtapasPorKvk()"></p-select>
+        </div>
+        <p-table [value]="etapas" [paginator]="true" [rows]="5" [loading]="loadingEtapas" responsiveLayout="scroll"
+          styleClass="w-full">
           <ng-template pTemplate="header">
             <tr>
               <th class="text-left">KVK</th>
               <th class="text-left">Etapa</th>
+              <th class="text-left">Fecha Inicio</th>
+              <th class="text-left">Fecha Fin</th>
               <th class="text-left">Descripción</th>
             </tr>
           </ng-template>
           <ng-template pTemplate="body" let-row>
             <tr>
-              <td>{{ row.kvk?.nombre || 'N/A' }}</td>
-              <td>{{ row.nombre }}</td>
-              <td class="max-w-xs truncate" [title]="row.descripcion">
-                {{ row.descripcion }}
+              <td>{{ row.kvkInfo?.display || row.idKvk || 'N/A' }}</td>
+              <td>{{ row.nombreEtapa || row.nombre }}</td>
+              <td>{{ row.fechaInicio ? (row.fechaInicio | date: 'dd/MM/yyyy') : '-' }}</td>
+              <td>{{ row.fechaFin ? (row.fechaFin | date: 'dd/MM/yyyy') : '-' }}</td>
+              <td class="max-w-xs truncate" [title]="row.detalles || row.descripcion">
+                {{ row.detalles || row.descripcion || '-' }}
               </td>
             </tr>
           </ng-template>
           <ng-template pTemplate="emptymessage">
             <tr>
-              <td colspan="3" class="text-center py-4 text-gray-500">No hay etapas registradas</td>
+              <td colspan="5" class="text-center py-4 text-gray-500">
+                {{ etapa.kvk ? 'No hay etapas registradas para este KVK' : 'Selecciona un KVK para ver sus etapas' }}
+              </td>
             </tr>
           </ng-template>
         </p-table>

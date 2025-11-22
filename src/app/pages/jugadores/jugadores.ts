@@ -94,11 +94,11 @@ export class Jugadores implements OnInit {
       return;
     }
 
-    if (!this.jugadorSeleccionado.poder || !this.jugadorSeleccionado.kp_inicial) {
+    if (this.jugadorSeleccionado.poder == null || this.jugadorSeleccionado.kp_inicial == null) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Advertencia',
-        detail: 'Poder y KP son obligatorios'
+        detail: 'Poder y KP son obligatorios',
       });
       return;
     }
@@ -114,12 +114,14 @@ export class Jugadores implements OnInit {
     // Aquí llamarías a tu servicio para actualizar en el backend
     this.jugadoresService.Jugadores(parametros).subscribe({
       next: () => {
-        console.log(parametros)
+        console.log(parametros);
         this.messageService.add({
           severity: 'success',
           summary: 'Éxito',
-          detail: 'Jugador actualizado correctamente'
+          detail: 'Jugador actualizado correctamente',
         });
+        this.cerrarModalEditar();
+        this.listarJugadores(); 
       },
       error: (error) => {
         this.messageService.add({
@@ -129,9 +131,6 @@ export class Jugadores implements OnInit {
         });
       }
     });
-
-    this.cerrarModalEditar();
-    this.listarJugadores(); // Refrescar la lista después de guardar
   }
 
   // Confirmar eliminación
@@ -246,6 +245,7 @@ export class Jugadores implements OnInit {
           detail: 'Jugador registrado correctamente'
         });
         this.limpiarFormulario();
+        this.listarJugadores();
       },
       error: (err) => {
         console.error('Error al registrar jugador:', err);
@@ -256,7 +256,6 @@ export class Jugadores implements OnInit {
         });
       }
     });
-    this.listarJugadores();
   }
 
   listarJugadores(): void {

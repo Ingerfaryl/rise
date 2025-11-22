@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { LucideAngularModule, SwordsIcon, UserIcon, Flag, HouseIcon } from 'lucide-angular';
+import { LucideAngularModule, SwordsIcon, UserIcon, Flag, HouseIcon, Sword} from 'lucide-angular';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -11,10 +11,12 @@ import { LucideAngularModule, SwordsIcon, UserIcon, Flag, HouseIcon } from 'luci
   styleUrls: ['./dashboard-page.css'],
 })
 export class DashboardPageComponent {
+  //importar iconos
   readonly SwordsIcon = SwordsIcon;
   readonly users = UserIcon;
   readonly flag = Flag;
   readonly home = HouseIcon;
+  readonly sword = Sword;
 
   menuOpen = false;
   sidebarOpen = false;

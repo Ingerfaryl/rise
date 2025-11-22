@@ -95,7 +95,7 @@
     <p-toast></p-toast>
   </p-card>
 
-  <div class="max-w-7xl mx-auto px-4 py-6">
+  <div>
     <p-card header="Lista de Jugadores" class="shadow-2 border-round-lg">
       <!-- Toolbar mejorado -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
@@ -122,14 +122,13 @@
           </span>
         </div>
       </div>
-
       <!-- Tabla -->
       <p-table
         [value]="jugadores"
         [paginator]="true"
         [rows]="10"
         [rowsPerPageOptions]="[5, 10, 20, 50]"
-        [globalFilterFields]="['nombre_juego', 'poder', 'kp_inicial', 'nombre_alianza']"
+        [globalFilterFields]="['nombre_juego', 'id_jugador_rok','poder', 'kp_inicial', 'nombre_alianza']"
         [filters]="{ global: { value: filtro, matchMode: 'contains' } }"
         responsiveLayout="scroll"
         [showCurrentPageReport]="true"
@@ -140,6 +139,7 @@
           <tr>
             <th class="text-center w-16">#</th>
             <th class="text-left">Nombre</th>
+            <th class="text-left">ID Jugador</th>
             <th class="text-right">Poder</th>
             <th class="text-right">KP</th>
             <th class="text-left">Alianza</th>
@@ -154,6 +154,9 @@
             </td>
             <td class="font-semibold text-gray-800">
               {{ jugador.nombre_juego }}
+            </td>
+            <td class="font-semibold text-gray-800">
+              {{ jugador.id_jugador_rok }}
             </td>
             <td class="text-right font-mono text-blue-600">
               {{ +jugador.poder | number : '1.0-0' }}
