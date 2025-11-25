@@ -1,6 +1,8 @@
 
 use db_rok;
 
+DROP TABLE tb_kp_jugador;
+
 insert into tb_jugador (id_alianza,nombre_juego,poder,kp_inicial,id_jugador_rok)
 values 
 ('1',N'乂 Weiss berg','74624021','376250282','88183602'),
