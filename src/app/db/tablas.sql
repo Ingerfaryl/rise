@@ -68,3 +68,14 @@ CREATE TABLE tb_meta_kp(
 	id_kvk        INT NOT NULL,
 	FOREIGN KEY (id_kvk) REFERENCES tb_kvk(id_kvk)
 );
+
+create table tb_jugador_kvk (
+	id_jugador_kvk INT AUTO_INCREMENT PRIMARY KEY,
+	id_jugador_rok BIGINT NOT NULL,
+	id_kvk         INT NOT NULL,
+	flg_participa	 TINYINT(1) NOT NULL DEFAULT 1,
+	fecha_registro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (id_jugador_rok) REFERENCES tb_jugador(id_jugador_rok),
+	FOREIGN KEY (id_kvk) REFERENCES tb_kvk(id_kvk),
+	UNIQUE KEY uq_jugador_kvk (id_jugador_rok, id_kvk)
+);

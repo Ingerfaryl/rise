@@ -62,4 +62,12 @@ BEGIN
         DELETE FROM tb_jugador 
         WHERE id_jugador_rok = p_id_jugador_rok;
     END IF;
+
+    ELSEIF p_opcion = 'L' THEN
+        SELECT 
+            id_jugador_rok,
+            id_kvk,
+        FROM tb_jugador_kvk
+        WHERE flg_Activo = 1;
+    END IF;
 END;
