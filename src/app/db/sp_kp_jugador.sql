@@ -30,7 +30,9 @@ BEGIN
       kj.kp_etapa as KpEtapa,
       kj.poder_etapa as PoderEtapa
     FROM tb_kp_jugador kj
-    INNER JOIN tb_jugador j ON j.id_jugador_rok = kj.id_jugador_rok;
+    INNER JOIN tb_jugador j ON j.id_jugador_rok = kj.id_jugador_rok
+    INNER JOIN tb_jugador_kvk jk ON jk.id_jugador_rok = kj.id_jugador_rok AND jk.id_kvk = kj.id_kvk
+    WHERE jk.flg_participa = 1 and kj.id_kvk = p_id_kvk and kj.id_etapa = p_id_etapa;
 
   ELSEIF p_opcion = 'U' THEN
     SELECT

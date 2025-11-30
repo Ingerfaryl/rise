@@ -59,4 +59,7 @@ CALL sp_etapa_kvk('R', NULL, NULL, NULL, NULL, NULL);
 
 CALL sp_kp_jugador('C', 157253593, 1,1, 1326400, 3000);
 
-CALL sp_kp_jugador('R', NULL, NULL, NULL, NULL,NULL);
+CALL sp_kp_jugador('R', NULL, 1, 1, NULL,NULL);
+
+CALL sp_jugador_kvk('C', 157253593, 1);
+CALL sp_jugador_kvk('R', NULL, 1);
