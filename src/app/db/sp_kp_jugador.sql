@@ -27,12 +27,18 @@ BEGIN
       j.nombre_juego as NombreJugador,
       kj.id_jugador_rok as IdJugadorRok,
       kj.id_etapa as idEtapa,
+      ek.nombre_etapa as NombreEtapa,
       kj.kp_etapa as KpEtapa,
       kj.poder_etapa as PoderEtapa
-    FROM tb_kp_jugador kj
-    INNER JOIN tb_jugador j ON j.id_jugador_rok = kj.id_jugador_rok
-    INNER JOIN tb_jugador_kvk jk ON jk.id_jugador_rok = kj.id_jugador_rok AND jk.id_kvk = kj.id_kvk
-    WHERE jk.flg_participa = 1 and kj.id_kvk = p_id_kvk and kj.id_etapa = p_id_etapa;
+    FROM
+        tb_jugador_kvk jk
+        LEFT JOIN tb_kp_jugador kj ON kj.id_jugador_rok = jk.id_jugador_rok
+        AND kj.id_kvk = jk.id_kvk
+        LEFT JOIN tb_jugador j ON j.id_jugador_rok = jk.id_jugador_rok
+        LEFT JOIN tb_etapa_kvk ek ON ek.id_etapa = kj.id_etapa
+    WHERE
+        jk.id_kvk = p_id_kvk
+        AND jk.flg_participa = 1 and kj.id_etapa = p_id_etapa;
 
   ELSEIF p_opcion = 'U' THEN
     SELECT

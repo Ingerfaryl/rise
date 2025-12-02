@@ -1,34 +1,134 @@
-<div class="container p-4">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card">
-        <div class="card-header">
-          <h4>KP Etapa</h4>
+<div class="container mx-auto p-4">
+  <div class="grid grid-cols-1 gap-4">
+    <!-- CARD DE FILTROS -->
+    <p-card header="Filtros" class="shadow-sm rounded-xl p-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Seleccione KVK</label>
+          <p-select
+            id="txtKvk"
+            name="kvk"
+            [options]="kvkList"
+            [(ngModel)]="selectedKvk"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona un KVK"
+            [filter]="true"
+            [showClear]="true"
+            class="w-full max-w-xs border rounded-xl py-1 px-2 focus:ring focus:ring-blue-300"
+            (ngModelChange)="onKvkChange($event)"
+          ></p-select>
         </div>
-        <div class="card-body">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Descripcion</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let item of items">
-                <td>{{ item.id }}</td>
-                <td>{{ item.nombre }}</td>
-                <td>{{ item.descripcion }}</td>
-                <td>
-                  <button class="btn btn-primary">Editar</button>
-                  <button class="btn btn-danger">Eliminar</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Seleccione Etapa</label>
+          <p-select
+            id="txtEtapaKvk"
+            name="etapaKvk"
+            [options]="etapasKvkList"
+            [(ngModel)]="selectedEtapaKvk"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Selecciona una etapa"
+            [filter]="true"
+            [showClear]="true"
+            [disabled]="!selectedKvk || etapasKvkList.length === 0"
+            class="w-full max-w-xs border rounded-xl py-1 px-2 disabled:bg-gray-200 disabled:cursor-not-allowed focus:ring focus:ring-blue-300"
+            (ngModelChange)="onEtapaChange($event)"
+          ></p-select>
         </div>
       </div>
-    </div>
+    </p-card>
+
+    <!-- CARD DE TABLA -->
+    <p-card header="KP Etapa" class="shadow-sm rounded-xl p-4">
+      <p-table
+        [value]="etapasKp"
+        [tableStyle]="{ 'min-width': '60rem' }"
+        responsiveLayout="scroll"
+        class="w-full"
+        [paginator]="true"
+        [rows]="5"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        [rowsPerPageOptions]="[5, 10, 20]"
+      >
+        <ng-template pTemplate="header">
+          <tr class="bg-gray-100 border-b">
+            <th class="px-3 py-2 text-center font-semibold">#</th>
+            <th class="px-3 py-2 font-semibold">Jugador</th>
+            <th class="px-3 py-2 font-semibold">ID Jugador</th>
+            <th class="px-3 py-2 font-semibold">Etapa</th>
+            <th class="px-3 py-2 font-semibold">KP Etapa</th>
+            <th class="px-3 py-2 font-semibold">Poder</th>
+            <th class="px-3 py-2 text-center font-semibold">Acciones</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-etapa let-rowIndex="rowIndex">
+          <tr class="hover:bg-blue-50 transition">
+            <td class="px-3 py-2 text-center">{{ rowIndex + 1 }}</td>
+            <td class="px-3 py-2 font-semibold">{{ etapa.nombreJugador }}</td>
+            <td class="px-3 py-2">{{ etapa.idJugadorRok }}</td>
+            <td class="px-3 py-2">{{ etapa.nombreEtapa }}</td>
+            <td class="px-3 py-2">
+              <input
+                *ngIf="editingRowIndex === rowIndex"
+                type="number"
+                [(ngModel)]="etapa.kpEtapa"
+                class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+
+              <span *ngIf="editingRowIndex !== rowIndex">
+                {{ etapa.kpEtapa | number }}
+              </span>
+            </td>
+
+            <td class="px-3 py-2">
+              <input
+                *ngIf="editingRowIndex === rowIndex"
+                type="number"
+                [(ngModel)]="etapa.poderEtapa"
+                class="w-32 px-3 py-2 border border-gray-300 rounded-lg text-right focus:ring-2 focus:ring-green-400 focus:outline-none"
+              />
+
+              <span *ngIf="editingRowIndex !== rowIndex">
+                {{ etapa.poderEtapa | number }}
+              </span>
+            </td>
+
+            <td class="px-3 py-2 text-center">
+              <button
+                class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1 rounded-lg mr-2"
+                (click)="editingRowIndex = rowIndex"
+                *ngIf="editingRowIndex !== rowIndex"
+              >
+                Editar
+              </button>
+
+              <button
+                class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-lg mr-2"
+                (click)="guardarCambios(etapa)"
+                *ngIf="editingRowIndex === rowIndex"
+              >
+                Guardar
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="px-3 py-4 text-center text-gray-500">
+              {{
+                selectedKvk && selectedEtapaKvk
+                  ? 'No hay datos disponibles'
+                  : 'Seleccione KVK y Etapa para ver los datos'
+              }}
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
   </div>
 </div>
+<p-confirmDialog></p-confirmDialog>

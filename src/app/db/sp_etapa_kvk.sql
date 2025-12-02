@@ -10,8 +10,44 @@ CREATE PROCEDURE sp_etapa_kvk (
 )
 BEGIN
   IF p_opcion = 'C' THEN
-    INSERT INTO tb_etapa_kvk (id_kvk, nombre_etapa, detalles, fecha_inicio, fecha_fin, fecha_registro)
-    VALUES (p_id_kvk, p_nombre_etapa, p_detalles, p_fecha_inicio, p_fecha_fin, CURRENT_DATE());
+    INSERT INTO
+        tb_etapa_kvk (
+            id_kvk,
+            nombre_etapa,
+            detalles,
+            fecha_inicio,
+            fecha_fin,
+            fecha_registro
+        )
+    VALUES (
+            p_id_kvk,
+            p_nombre_etapa,
+            p_detalles,
+            p_fecha_inicio,
+            p_fecha_fin,
+            CURRENT_DATE()
+        );
+    INSERT INTO
+        tb_kp_jugador (
+            id_jugador_rok,
+            id_etapa,
+            id_kvk,
+            kp_etapa,
+            poder_etapa
+        )
+    SELECT jk.id_jugador_rok, LAST_INSERT_ID(),
+        p_id_kvk, 0, 0
+    FROM tb_jugador_kvk jk
+    WHERE
+        jk.id_kvk = p_id_kvk
+        AND NOT EXISTS (
+            SELECT 1
+            FROM tb_kp_jugador kj
+            WHERE
+                kj.id_jugador_rok = jk.id_jugador_rok
+                AND kj.id_etapa = LAST_INSERT_ID()
+                AND kj.id_kvk = p_id_kvk
+        );
 
   ELSEIF p_opcion = 'R' THEN
     SELECT 

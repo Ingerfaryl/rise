@@ -53,13 +53,19 @@ call sp_kvk('R', '', null, null, null);
 
 call sp_kvk('C', 'Prueba KVK', 1, '2025-07-01', '2025-09-30');
 
-CALL sp_etapa_kvk('C', 1, 'Etapa 1', 'Detalles de la etapa 1', '2025-04-01', '2025-04-30');
+CALL sp_etapa_kvk('C', 1, 'Etapa 4', 'ñiñiñi', '2025-06-01', '2025-06-30');
 
 CALL sp_etapa_kvk('R', NULL, NULL, NULL, NULL, NULL);
 
 CALL sp_kp_jugador('C', 157253593, 1,1, 1326400, 3000);
 
-CALL sp_kp_jugador('R', NULL, 1, 1, NULL,NULL);
+CALL sp_kp_jugador('R', NULL, 1,1, NULL,NULL);
 
-CALL sp_jugador_kvk('C', 157253593, 1);
+CALL sp_jugador_kvk('C', 88183602, 1);
 CALL sp_jugador_kvk('R', NULL, 1);
+
+select * from tb_jugador_kvk;
+SELECT id_etapa, id_kvk, nombre_etapa
+FROM tb_etapa_kvk
+WHERE
+    id_kvk =1;
