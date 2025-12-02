@@ -9,7 +9,7 @@ import { Select } from 'primeng/select';
 import { TooltipModule } from 'primeng/tooltip';
 import { ToolbarModule } from 'primeng/toolbar';
 import { TableModule } from 'primeng/table';
-import { Toast } from 'primeng/toast';
+import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -28,6 +28,7 @@ import { RespuestaKvk } from '../kvk/interfaces';
     CardModule,
     ButtonModule,
     InputTextModule,
+    ToastModule,
     Select,
     TooltipModule,
     ToolbarModule,
